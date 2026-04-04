@@ -13,6 +13,7 @@ const POPULAR_BRANDS = [
 export default function DealersPage() {
   const [dealers, setDealers] = useState<Dealer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Filters
   const [search, setSearch] = useState("");
@@ -21,7 +22,7 @@ export default function DealersPage() {
   const [dealerType, setDealerType] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
   useEffect(() => {
     // Reset district if state changes
@@ -37,6 +38,7 @@ export default function DealersPage() {
   useEffect(() => {
     async function fetchDealers() {
       setLoading(true);
+      setError(null);
       try {
         const query = new URLSearchParams();
         if (search) query.append("search", search);
@@ -49,9 +51,12 @@ export default function DealersPage() {
         if (res.ok) {
           const data = await res.json();
           setDealers(data.dealers);
+        } else {
+          throw new Error("Failed to connect to showroom database");
         }
       } catch (err) {
         console.error("Failed to fetch dealers", err);
+        setError("Our showroom registry is currently offline. Please try again shortly.");
       } finally {
         setLoading(false);
       }
@@ -97,11 +102,11 @@ export default function DealersPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-1.5 text-xs font-bold tracking-widest text-brand uppercase">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-1.5 text-[10px] font-black tracking-widest text-brand uppercase italic">
             <Building2 size={14} />
-            Verified Network
+            Verified Registry
           </div>
-          <h1 className="text-gradient text-5xl font-black tracking-tight sm:text-6xl">Find Verified Car Dealers</h1>
+          <h1 className="text-gradient text-5xl font-black tracking-tight sm:text-6xl font-arabic-heading uppercase italic">Global Showroom Network</h1>
           <p className="mt-4 max-w-2xl text-lg text-zinc-500 hidden sm:block">
             Locate top-rated and strictly verified JSK automotive partners across the country for sales, exchanges, and restorations.
           </p>
@@ -215,21 +220,40 @@ export default function DealersPage() {
                 <DealerCardSkeleton key={i} />
               ))}
             </motion.div>
+          ) : error ? (
+            <motion.div 
+              key="error"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="text-center py-24 border border-red-500/20 rounded-3xl bg-red-500/5 glass"
+            >
+              <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-3xl bg-red-500/10 mb-8">
+                 <Building2 className="h-10 w-10 text-red-500" />
+              </div>
+              <h3 className="text-2xl font-black text-white mb-2 font-arabic-heading">Showroom Offline</h3>
+              <p className="text-zinc-400 max-w-md mx-auto">
+                {error}
+              </p>
+              <button onClick={() => window.location.reload()} className="mt-8 px-8 py-3 rounded-xl bg-red-500 text-white transition-all hover:bg-red-600 text-xs font-black uppercase tracking-widest">
+                Attempt Reconnect
+              </button>
+            </motion.div>
           ) : dealers.length === 0 ? (
             <motion.div 
               key="empty"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="text-center py-24 border border-border/50 rounded-3xl bg-card/10 glass"
+              className="text-center py-24 border border-brand/20 rounded-3xl bg-card/10 glass"
             >
-              <Store className="mx-auto h-16 w-16 text-zinc-600 mb-6" />
-              <h3 className="text-2xl font-black text-foreground mb-2">No Verified Dealers Found</h3>
+              <Store className="mx-auto h-16 w-16 text-brand/50 mb-6" />
+              <h3 className="text-2xl font-black text-foreground mb-2 font-arabic-heading uppercase italic">Registry Entry Missing</h3>
               <p className="text-zinc-500 max-w-md mx-auto">
-                We're constantly expanding our network. Try adjusting your search criteria or modifying your brand filters.
+                No showrooms match your current filter criteria.
               </p>
-              <button onClick={() => { setSearch(''); setState(''); setDistrict(''); setDealerType(''); setSelectedBrands([]); }} className="mt-8 px-6 py-2 rounded-full border border-brand text-brand hover:bg-brand hover:text-white transition-colors text-sm font-bold">
-                Clear All Filters
+              <button onClick={() => { setSearch(''); setState(''); setDistrict(''); setDealerType(''); setSelectedBrands([]); }} className="mt-8 px-8 py-3 rounded-full border border-brand/30 text-brand hover:bg-brand hover:text-black transition-all text-xs font-black uppercase tracking-widest">
+                Clear Filters
               </button>
             </motion.div>
           ) : (

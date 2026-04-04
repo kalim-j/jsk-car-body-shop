@@ -69,7 +69,7 @@ export function DealerCard({ dealer }: { dealer: Dealer }) {
             {dealer.experience || "10+ Years"} Exp · {dealer.speciality || "Auto Expert"}
           </div>
           <div className="flex flex-wrap gap-1.5 mt-2">
-            {dealer.brands.map((brand) => (
+            {Array.isArray(dealer.brands) ? dealer.brands.map((brand) => (
               <span
                 key={brand}
                 className="inline-flex items-center gap-1 rounded bg-black/10 dark:bg-white/5 px-2 py-1 text-xs font-medium text-zinc-400 border border-white/5"
@@ -77,7 +77,9 @@ export function DealerCard({ dealer }: { dealer: Dealer }) {
                 <CheckCircle2 size={10} className="text-brand hidden sm:block" />
                 {brand}
               </span>
-            ))}
+            )) : (
+              <span className="text-[10px] text-zinc-500 italic">Multi-brand service</span>
+            )}
           </div>
         </div>
 
