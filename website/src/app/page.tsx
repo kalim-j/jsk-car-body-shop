@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { GalleryGrid } from "../components/GalleryGrid";
+import { FeaturedDealer } from "../components/FeaturedDealer";
 import { business } from "../config/business";
 import { ArrowRight, Phone, MessageSquare, Shield, Paintbrush, Wrench, Sparkles } from "lucide-react";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
@@ -125,6 +126,9 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
+
+      {/* Featured Dealer */}
+      <FeaturedDealer />
 
       {/* Services Grid */}
       <section className="container mx-auto px-6 py-24">
