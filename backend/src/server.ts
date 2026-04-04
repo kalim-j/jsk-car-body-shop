@@ -255,7 +255,7 @@ app.put("/dealers/:id", authMiddleware, adminOnly, async (req, res) => {
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { brands, ...rest } = parsed.data;
   const updated = await prisma.dealer.update({
-    where: { id: req.params.id },
+    where: { id: req.params.id as string },
     data: { ...rest, brands: JSON.stringify(brands) },
   });
   res.json({ dealer: { ...updated, brands: JSON.parse(updated.brands) } });
@@ -263,7 +263,7 @@ app.put("/dealers/:id", authMiddleware, adminOnly, async (req, res) => {
 
 // Admin: delete dealer
 app.delete("/dealers/:id", authMiddleware, adminOnly, async (req, res) => {
-  await prisma.dealer.delete({ where: { id: req.params.id } });
+  await prisma.dealer.delete({ where: { id: req.params.id as string } });
   res.json({ ok: true });
 });
 
