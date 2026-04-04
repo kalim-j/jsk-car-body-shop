@@ -1,14 +1,43 @@
 import "dotenv/config";
-
 import cors from "cors";
 import express from "express";
 import { z } from "zod";
+import { v2 as cloudinary } from "cloudinary";
+import multer from "multer";
 
 import { createSessionToken, ensureUser, getUserFromToken, loginSchema, signupSchema, verifyPassword } from "./auth.js";
 import { prisma } from "./prisma.js";
 
 const app = express();
 app.use(express.json());
+
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Multer for file uploads (Memory Storage)
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+
+// Helper for Cloudinary streaming upload
+const uploadToCloudinary = (buffer: Buffer, folder: string) => {
+  return new Promise<string>((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result?.secure_url || "");
+      }
+    );
+    uploadStream.end(buffer);
+  });
+};
 
 const corsOrigins = [
   process.env.CORS_ORIGIN_WEBSITE,
@@ -392,6 +421,44 @@ app.delete("/repairs/:id", authMiddleware, adminOnly, async (req, res) => {
   await prisma.repairJob.delete({ where: { id: req.params.id as string } });
   res.json({ ok: true });
 });
+
+// Admin: Upload repair work with files directly
+app.post("/upload-repair", authMiddleware, adminOnly, 
+  upload.fields([
+    { name: 'beforeImage', maxCount: 1 }, 
+    { name: 'afterImage', maxCount: 1 }
+  ]), 
+  async (req, res) => {
+    try {
+      const { title, description, vehicleType } = req.body;
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+      if (!files.beforeImage?.[0] || !files.afterImage?.[0]) {
+        return res.status(400).json({ error: "Both 'Before' and 'After' images are required" });
+      }
+
+      const [beforeUrl, afterUrl] = await Promise.all([
+        uploadToCloudinary(files.beforeImage[0].buffer, "repairs"),
+        uploadToCloudinary(files.afterImage[0].buffer, "repairs"),
+      ]);
+
+      const created = await prisma.repairJob.create({
+        data: {
+          title,
+          description,
+          vehicleType,
+          beforeImage: beforeUrl,
+          afterImage: afterUrl,
+        },
+      });
+
+      res.json({ repair: created });
+    } catch (error: any) {
+      console.error("Upload Error:", error);
+      res.status(500).json({ error: error.message || "Failed to process images" });
+    }
+  }
+);
 
 const port = Number(process.env.PORT || 4000);
 app.listen(port, () => {

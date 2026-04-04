@@ -90,6 +90,14 @@ export function SiteHeader() {
           {mounted && (
             user ? (
               <div className="flex items-center gap-2">
+                {user.role === "ADMIN" && (
+                  <Link
+                    href="/admin/upload-repair"
+                    className="hidden sm:inline-flex h-10 px-4 items-center justify-center rounded-full bg-zinc-900 border border-brand/40 text-[10px] font-black uppercase tracking-widest text-brand hover:bg-brand hover:text-black transition-all gold-glow mr-2"
+                  >
+                    Upload Repair
+                  </Link>
+                )}
                 <div className="hidden sm:flex flex-col items-end mr-1 text-[10px] font-black uppercase tracking-tighter">
                   <span className="text-foreground leading-none">{user.name}</span>
                   <span className="text-brand/80 leading-none">{user.role}</span>
