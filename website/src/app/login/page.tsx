@@ -21,8 +21,12 @@ import {
   Gem
 } from "lucide-react";
 
+import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
+
 export default function LoginPage() {
   const router = useRouter();
+  const { user, login: authLogin } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,6 +37,17 @@ export default function LoginPage() {
   const [success, setSuccess] = useState(false);
 
   const [activeInput, setActiveInput] = useState<"name" | "email" | "password" | null>(null);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ADMIN") {
+        router.push("/admin/cars");
+      } else {
+        router.push("/cars");
+      }
+    }
+  }, [user, router]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,6 +69,10 @@ export default function LoginPage() {
         toast.error(errorMsg, { icon: "❌" });
         return;
       }
+
+      // Sync with AuthContext
+      authLogin(data.token, data.user);
+
       setSuccess(true);
       toast.success(mode === "login" ? "Welcome Back!" : "Account Created!", { icon: "🏎️" });
       setTimeout(() => {

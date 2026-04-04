@@ -8,10 +8,13 @@ import { Menu, X, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 
+import { useAuth } from "../context/AuthContext";
+
 const NAV_ITEMS: Array<{ href: string; label: string }> = [
   { href: "/", label: "Home" },
   { href: "/cars", label: "Buy Cars" },
   { href: "/sell", label: "Sell Car" },
+  { href: "/our-work", label: "Our Work" },
   { href: "/services", label: "Services" },
   { href: "/dealers", label: "Dealers" },
   { href: "/contact", label: "Contact" },
@@ -22,6 +25,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => setMounted(true), []);
 
@@ -81,6 +85,30 @@ export function SiteHeader() {
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+          )}
+
+          {mounted && (
+            user ? (
+              <div className="flex items-center gap-2">
+                <div className="hidden sm:flex flex-col items-end mr-1 text-[10px] font-black uppercase tracking-tighter">
+                  <span className="text-foreground leading-none">{user.name}</span>
+                  <span className="text-brand/80 leading-none">{user.role}</span>
+                </div>
+                <button
+                  onClick={logout}
+                  className="inline-flex h-10 px-4 items-center justify-center rounded-full border border-brand/30 bg-brand/10 text-[10px] font-black uppercase tracking-widest text-brand hover:bg-brand hover:text-black transition-all"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="inline-flex h-10 px-6 items-center justify-center rounded-full bg-brand text-[10px] font-black uppercase tracking-widest text-black hover:bg-brand-light transition-all gold-glow"
+              >
+                Login
+              </Link>
+            )
           )}
 
           <button

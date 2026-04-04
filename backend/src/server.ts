@@ -348,6 +348,51 @@ app.post("/dealers/seed", async (_req, res) => {
 });
 
 
+const repairJobSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  vehicleType: z.enum(["Car", "Tipper", "Truck"]),
+  beforeImage: z.string().url(),
+  afterImage: z.string().url(),
+});
+
+// Public: list all repair jobs with optional vehicleType filter
+app.get("/repairs", async (req, res) => {
+  const { vehicleType } = req.query as { vehicleType?: string };
+  const repairs = await prisma.repairJob.findMany({
+    where: {
+      ...(vehicleType && { vehicleType }),
+    },
+    orderBy: { createdAt: "desc" },
+  });
+  res.json({ repairs });
+});
+
+// Admin: create repair job
+app.post("/repairs", authMiddleware, adminOnly, async (req, res) => {
+  const parsed = repairJobSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const created = await prisma.repairJob.create({ data: parsed.data });
+  res.json({ repair: created });
+});
+
+// Admin: update repair job
+app.put("/repairs/:id", authMiddleware, adminOnly, async (req, res) => {
+  const parsed = repairJobSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const updated = await prisma.repairJob.update({
+    where: { id: req.params.id as string },
+    data: parsed.data,
+  });
+  res.json({ repair: updated });
+});
+
+// Admin: delete repair job
+app.delete("/repairs/:id", authMiddleware, adminOnly, async (req, res) => {
+  await prisma.repairJob.delete({ where: { id: req.params.id as string } });
+  res.json({ ok: true });
+});
+
 const port = Number(process.env.PORT || 4000);
 app.listen(port, () => {
   // eslint-disable-next-line no-console
