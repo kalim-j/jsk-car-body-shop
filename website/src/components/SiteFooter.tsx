@@ -17,10 +17,9 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 gap-x-12 gap-y-4 sm:flex sm:items-center sm:gap-8">
           <div className="flex flex-col gap-3">
              <Link href="/services" className="text-xs font-black uppercase tracking-tighter text-zinc-400 hover:text-brand transition-colors">Services</Link>
-             <Link href="/gallery" className="text-xs font-black uppercase tracking-tighter text-zinc-400 hover:text-brand transition-colors">Gallery</Link>
+             <Link href="/dealers" className="text-xs font-black uppercase tracking-tighter text-zinc-400 hover:text-brand transition-colors">Dealers</Link>
           </div>
           <div className="flex flex-col gap-3">
-             <Link href="/dealers" className="text-xs font-black uppercase tracking-tighter text-zinc-400 hover:text-brand transition-colors">Dealers</Link>
              <Link href="/contact" className="text-xs font-black uppercase tracking-tighter text-zinc-400 hover:text-brand transition-colors">Contact</Link>
           </div>
           <div className="flex flex-col gap-3 pt-4 sm:pt-0">

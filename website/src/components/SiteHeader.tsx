@@ -14,7 +14,6 @@ const NAV_ITEMS: Array<{ href: string; label: string }> = [
   { href: "/sell", label: "Sell Car" },
   { href: "/services", label: "Services" },
   { href: "/dealers", label: "Dealers" },
-  { href: "/gallery", label: "Gallery" },
   { href: "/contact", label: "Contact" },
 ];
 

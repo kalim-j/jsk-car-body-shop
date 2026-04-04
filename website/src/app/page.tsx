@@ -4,7 +4,6 @@ import Link from "next/link";
 import { GalleryGrid } from "../components/GalleryGrid";
 import { FeaturedDealer } from "../components/FeaturedDealer";
 import { FeaturedVehicles } from "../components/FeaturedVehicles";
-import { RepairShowcase } from "../components/RepairShowcase";
 import { business } from "../config/business";
 import { ArrowRight, Phone, MessageSquare, Shield, Paintbrush, Wrench, Sparkles, Truck } from "lucide-react";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
@@ -132,8 +131,6 @@ export default function Home() {
       {/* Featured Dealer */}
       <FeaturedDealer />
 
-      {/* Repair Showcase Section */}
-      <RepairShowcase />
 
       {/* Featured Inventory */}
       <FeaturedVehicles />
@@ -188,33 +185,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Gallery Highlight */}
-      <section className="bg-zinc-900/10 dark:bg-zinc-900/20 py-24 border-y border-white/5">
-        <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUpVariant}
-          className="container mx-auto px-6"
-        >
-          <div className="mb-12 flex items-end justify-between">
-            <div>
-              <h2 className="text-gradient text-4xl font-black tracking-tight">Portfolio</h2>
-              <p className="mt-2 text-zinc-500">Recent transformations from our workshop.</p>
-            </div>
-            <Link href="/gallery" className="text-sm font-bold text-brand hover:underline">
-              Full Gallery →
-            </Link>
-          </div>
 
-          <GalleryGrid
-            count={business.galleryCount}
-            placeholderCount={business.galleryPlaceholderCount}
-            imageHeightClassName="h-64"
-            itemHref="/gallery"
-          />
-        </motion.div>
-      </section>
+      {/* CTA Section */}
 
       {/* CTA Section */}
       <section className="container mx-auto px-6 py-32 text-center">
