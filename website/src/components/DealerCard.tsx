@@ -4,6 +4,8 @@ import React from "react";
 import { Phone, MapPin, CheckCircle2, BadgeCheck, Star, Navigation } from "lucide-react";
 import { motion } from "framer-motion";
 
+import Link from "next/link";
+
 export interface Dealer {
   id: string;
   name: string;
@@ -16,10 +18,13 @@ export interface Dealer {
   imageUrl?: string | null;
   rating: number;
   verified: boolean;
+  experience?: string;
+  speciality?: string;
+  locationLink?: string;
 }
 
 export function DealerCard({ dealer }: { dealer: Dealer }) {
-  const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${dealer.name} ${dealer.district} ${dealer.state}`)}`;
+  const mapSearchUrl = dealer.locationLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${dealer.name} ${dealer.district} ${dealer.state}`)}`;
 
   return (
     <motion.div 
@@ -27,7 +32,7 @@ export function DealerCard({ dealer }: { dealer: Dealer }) {
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:border-brand/50 transition-colors duration-300 group shadow-lg shadow-black/20 hover:showroom-glow flex flex-col h-full"
     >
-      <div className="p-6 flex flex-col flex-1">
+      <Link href={`/dealers/${dealer.id}`} className="p-6 flex flex-col flex-1">
         <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-2">
             <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors line-clamp-1">
@@ -59,7 +64,10 @@ export function DealerCard({ dealer }: { dealer: Dealer }) {
           </div>
         </div>
 
-        <div className="mb-6 flex-1">
+        <div className="mb-4">
+          <div className="text-[10px] font-black uppercase text-brand tracking-widest mb-1">
+            {dealer.experience || "10+ Years"} Exp · {dealer.speciality || "Auto Expert"}
+          </div>
           <div className="flex flex-wrap gap-1.5 mt-2">
             {dealer.brands.map((brand) => (
               <span
@@ -75,24 +83,23 @@ export function DealerCard({ dealer }: { dealer: Dealer }) {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3 mt-auto pt-6 border-t border-white/5">
-          <a
-            href={mapSearchUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={(e) => { e.preventDefault(); window.open(mapSearchUrl, '_blank'); }}
             className="flex-1 flex items-center justify-center gap-2 bg-black/20 dark:bg-white/5 text-foreground px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-black/40 dark:hover:bg-white/10 transition-colors"
           >
             <Navigation size={16} className="text-blue-400" />
             Map
-          </a>
+          </button>
           <a
             href={`tel:${dealer.phone}`}
+            onClick={(e) => e.stopPropagation()}
             className="flex-[2] flex items-center justify-center gap-2 bg-brand text-white px-4 py-2.5 rounded-xl text-sm font-black hover:bg-brand-light transition-all shadow-[0_0_15px_rgba(225,29,72,0.2)] hover:shadow-[0_0_25px_rgba(225,29,72,0.4)]"
           >
             <Phone size={16} />
             Call Now
           </a>
         </div>
-      </div>
+      </Link>
     </motion.div>
   );
 }

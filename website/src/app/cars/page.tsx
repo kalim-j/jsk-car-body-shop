@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { CarCard, Car, CarCardSkeleton } from "../../components/CarCard";
 import { INDIAN_STATES, ALL_STATES } from "../../lib/indianStates";
-import { MapPin, Search, Filter, CarFront, Contact } from "lucide-react";
+import { MapPin, Search, Filter, CarFront, Contact, Truck, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const POPULAR_BRANDS = [
-  "Maruti Suzuki", "Tata Motors", "Mahindra", "Hyundai", "Kia", "Toyota", "Honda"
+  "Maruti Suzuki", "Tata Motors", "Mahindra", "Hyundai", "Kia", "Toyota", "Honda", "Ashok Leyland"
 ];
+
+const VEHICLE_TYPES = ["All", "Car", "Tipper", "Truck"];
 
 export default function MarketplacePage() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -18,6 +20,7 @@ export default function MarketplacePage() {
   const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
   const [condition, setCondition] = useState("");
+  const [vehicleType, setVehicleType] = useState("All");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -42,6 +45,7 @@ export default function MarketplacePage() {
         if (state) query.append("state", state);
         if (district) query.append("district", district);
         if (condition) query.append("condition", condition);
+        if (vehicleType !== "All") query.append("vehicleType", vehicleType);
         if (minPrice) query.append("minPrice", minPrice);
         if (maxPrice) query.append("maxPrice", maxPrice);
         if (selectedBrands.length > 0) query.append("brand", selectedBrands.join(','));
@@ -60,7 +64,7 @@ export default function MarketplacePage() {
     
     const debounceTimeout = setTimeout(fetchCars, 500);
     return () => clearTimeout(debounceTimeout);
-  }, [state, district, condition, minPrice, maxPrice, selectedBrands, backendUrl]);
+  }, [state, district, condition, vehicleType, minPrice, maxPrice, selectedBrands, backendUrl]);
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -75,11 +79,30 @@ export default function MarketplacePage() {
             <CarFront size={14} />
             Global Marketplace
           </div>
-          <h1 className="text-gradient text-5xl font-black tracking-tight sm:text-6xl">Buy Used Cars</h1>
+          <h1 className="text-gradient text-5xl font-black tracking-tight sm:text-6xl">
+            {vehicleType === "All" ? "Vehicles for Sale" : `${vehicleType}s for Sale`}
+          </h1>
           <p className="mt-4 max-w-2xl text-lg text-zinc-500 hidden sm:block">
-            Browse through rigorously approved listings from independent owners and verified JSK dealership partners.
+            Browse through rigorously approved {vehicleType.toLowerCase()} listings from independent owners and verified JSK dealership partners.
           </p>
         </motion.div>
+
+        {/* Category Tabs */}
+        <div className="flex gap-2 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-2xl mb-8 w-fit border border-white/5">
+          {VEHICLE_TYPES.map((type) => (
+            <button
+              key={type}
+              onClick={() => setVehicleType(type)}
+              className={`px-6 py-2.5 text-sm font-bold rounded-xl transition-all ${
+                vehicleType === type 
+                ? "bg-brand text-white shadow-lg shadow-brand/20" 
+                : "text-zinc-500 hover:text-foreground"
+              }`}
+            >
+              {type === "All" ? "All Vehicles" : `${type}s`}
+            </button>
+          ))}
+        </div>
 
         {/* Filters Panel */}
         <motion.div 

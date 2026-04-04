@@ -98,14 +98,15 @@ app.post("/auth/signup", async (req, res) => {
 const carFilterSchema = z.object({
   state: z.string().optional(),
   district: z.string().optional(),
-  brand: z.string().optional(), // Can also be comma separated
+  brand: z.string().optional(),
   condition: z.string().optional(),
+  vehicleType: z.enum(["Car", "Tipper", "Truck"]).optional(),
   minPrice: z.coerce.number().optional(),
   maxPrice: z.coerce.number().optional()
 });
 
 app.get("/cars", async (req, res) => {
-  const { state, district, brand, condition, minPrice, maxPrice } = req.query as Record<string, string>;
+  const { state, district, brand, condition, vehicleType, minPrice, maxPrice } = req.query as Record<string, string>;
   const brandList = brand ? (typeof brand === 'string' ? brand.split(',') : brand) : [];
 
   const cars = await prisma.car.findMany({
@@ -114,6 +115,7 @@ app.get("/cars", async (req, res) => {
       ...(state && { state }),
       ...(district && { district }),
       ...(condition && { condition }),
+      ...(vehicleType && { vehicleType }),
       ...(brandList.length > 0 && { brand: { in: brandList as string[] } }),
       ...(minPrice && { price: { gte: Number(minPrice) } }),
       ...(maxPrice && { price: { lte: Number(maxPrice) } }),
@@ -134,9 +136,13 @@ const uploadCarSchema = z.object({
   brand: z.string().min(1),
   price: z.number().int().min(0),
   condition: z.enum(["New", "Used", "Repaired"]),
+  vehicleType: z.enum(["Car", "Tipper", "Truck"]).default("Car"),
+  year: z.number().int().min(1980).max(2026),
+  phone: z.string().min(10),
   images: z.array(z.string()).default([]),
   state: z.string().min(1),
   district: z.string().min(1),
+  locationLink: z.string().url().optional(),
 });
 
 app.post("/cars/sell", authMiddleware, async (req, res) => {
@@ -230,7 +236,7 @@ const dealerSchema = z.object({
   name: z.string().min(1),
   state: z.string().min(1),
   district: z.string().min(1),
-  phone: z.string().min(1),
+  phone: z.string().min(10),
   email: z.string().email(),
   brands: z.array(z.string()).default([]),
   dealerType: z.enum(["New", "Used", "Both", "Luxury"]).default("Both"),
@@ -238,27 +244,42 @@ const dealerSchema = z.object({
   rating: z.number().min(0).max(5).default(0.0),
   verified: z.boolean().default(false),
   active: z.boolean().default(true),
+  locationLink: z.string().url().optional(),
+  experience: z.string().default("10+ years"),
+  speciality: z.string().default("Automotive Care"),
+  openingHours: z.string().default("9 AM - 8 PM"),
+  services: z.array(z.string()).default([]),
 });
 
 // Admin: create dealer
 app.post("/dealers", authMiddleware, adminOnly, async (req, res) => {
   const parsed = dealerSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-  const { brands, ...rest } = parsed.data;
-  const created = await prisma.dealer.create({ data: { ...rest, brands: JSON.stringify(brands) } });
-  res.json({ dealer: { ...created, brands: JSON.parse(created.brands) } });
+  const { brands, services, ...rest } = parsed.data;
+  const created = await prisma.dealer.create({ 
+    data: { 
+      ...rest, 
+      brands: JSON.stringify(brands),
+      services: JSON.stringify(services)
+    } 
+  });
+  res.json({ dealer: { ...created, brands: JSON.parse(created.brands), services: JSON.parse(created.services) } });
 });
 
 // Admin: update dealer
 app.put("/dealers/:id", authMiddleware, adminOnly, async (req, res) => {
   const parsed = dealerSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-  const { brands, ...rest } = parsed.data;
+  const { brands, services, ...rest } = parsed.data;
   const updated = await prisma.dealer.update({
     where: { id: req.params.id as string },
-    data: { ...rest, brands: JSON.stringify(brands) },
+    data: { 
+      ...rest, 
+      brands: JSON.stringify(brands),
+      services: JSON.stringify(services)
+    },
   });
-  res.json({ dealer: { ...updated, brands: JSON.parse(updated.brands) } });
+  res.json({ dealer: { ...updated, brands: JSON.parse(updated.brands), services: JSON.parse(updated.services) } });
 });
 
 // Admin: delete dealer

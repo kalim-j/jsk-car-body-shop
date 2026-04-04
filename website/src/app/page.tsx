@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { GalleryGrid } from "../components/GalleryGrid";
 import { FeaturedDealer } from "../components/FeaturedDealer";
+import { FeaturedVehicles } from "../components/FeaturedVehicles";
 import { business } from "../config/business";
-import { ArrowRight, Phone, MessageSquare, Shield, Paintbrush, Wrench, Sparkles } from "lucide-react";
+import { ArrowRight, Phone, MessageSquare, Shield, Paintbrush, Wrench, Sparkles, Truck } from "lucide-react";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
 
 export default function Home() {
@@ -130,6 +131,9 @@ export default function Home() {
       {/* Featured Dealer */}
       <FeaturedDealer />
 
+      {/* Featured Inventory */}
+      <FeaturedVehicles />
+
       {/* Services Grid */}
       <section className="container mx-auto px-6 py-24">
         <motion.div 
@@ -240,6 +244,40 @@ export default function Home() {
                 WhatsApp Us
               </a>
             </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Sell CTA Section */}
+      <section className="container mx-auto px-6 pb-24 text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-[3rem] border border-white/5 bg-gradient-to-tr from-brand/5 via-transparent to-brand/5 p-12 lg:p-20 relative overflow-hidden glass"
+        >
+          <div className="max-w-3xl mx-auto flex flex-col items-center">
+            <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-brand text-white shadow-lg shadow-brand/40">
+              <Truck size={32} />
+            </div>
+            <h2 className="text-gradient text-4xl font-black tracking-tight sm:text-6xl mb-6">Want to sell your vehicle?</h2>
+            <p className="text-zinc-400 text-lg mb-10 max-w-xl">
+              List your car, tipper, or truck on our verified network. We bridge the gap between individual sellers and premium buyers across the JSK marketplace.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link
+                href="/sell"
+                className="rounded-full bg-brand px-12 py-5 text-sm font-black text-white hover:bg-brand-light transition-all neon-glow shadow-xl"
+              >
+                Start Selling Now
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-full border border-white/10 bg-white/5 backdrop-blur-sm px-12 py-5 text-sm font-bold text-foreground transition-all hover:bg-white/10"
+              >
+                Consult a Dealer
+              </Link>
+            </div>
           </div>
         </motion.div>
       </section>

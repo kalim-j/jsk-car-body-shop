@@ -107,10 +107,10 @@ export default function AdminCarsPage() {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-black/5 dark:bg-white/5 border-b border-border/50">
               <tr>
-                <th className="px-6 py-4 font-black">Car Details</th>
-                <th className="px-6 py-4 font-black">Price</th>
+                <th className="px-6 py-4 font-black">Vehicle</th>
+                <th className="px-6 py-4 font-black">Price & Year</th>
                 <th className="px-6 py-4 font-black">Location</th>
-                <th className="px-6 py-4 font-black">Seller</th>
+                <th className="px-6 py-4 font-black">Contact & Seller</th>
                 <th className="px-6 py-4 font-black">Status</th>
                 <th className="px-6 py-4 font-black text-right">Actions</th>
               </tr>
@@ -127,7 +127,7 @@ export default function AdminCarsPage() {
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-zinc-800 rounded overflow-hidden shadow">
+                      <div className="w-12 h-12 bg-zinc-800 rounded overflow-hidden shadow shrink-0">
                         {(() => {
                            let img = "";
                            try { img = JSON.parse(car.images)[0] } catch(e){}
@@ -135,21 +135,26 @@ export default function AdminCarsPage() {
                         })()}
                       </div>
                       <div>
-                        <div className="font-bold text-foreground">{car.name}</div>
-                        <div className="text-xs text-brand font-black tracking-widest">{car.brand}</div>
+                        <div className="font-bold text-foreground line-clamp-1">{car.name}</div>
+                        <div className="flex gap-2 mt-1">
+                          <span className="text-[10px] font-black text-brand tracking-widest uppercase">{car.vehicleType}</span>
+                          <span className="text-[10px] text-zinc-500 font-bold uppercase">{car.brand}</span>
+                        </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 font-bold">
-                    <div className="flex items-center"><IndianRupee size={12}/>{car.price.toLocaleString("en-IN")}</div>
+                  <td className="px-6 py-4">
+                    <div className="font-bold text-foreground whitespace-nowrap"><IndianRupee size={12} className="inline mr-1"/>{car.price.toLocaleString("en-IN")}</div>
+                    <div className="text-xs text-zinc-500 font-medium">Model: {car.year}</div>
                   </td>
                   <td className="px-6 py-4 text-zinc-500 font-medium">
-                    {car.district}, {car.state}
+                    <div className="flex items-center gap-1.5"><MapPin size={14} className="text-brand"/> {car.district}</div>
+                    <div className="text-xs ml-5">{car.state}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-semibold">{car?.seller?.name || "Unknown"}</div>
-                    <div className="text-xs text-zinc-500">{car?.seller?.email || "N/A"}</div>
-                    <div className="text-xs font-bold text-blue-500">{car.sellerType}</div>
+                    <div className="font-semibold text-foreground">{car?.seller?.name || "Independent"}</div>
+                    <div className="text-xs text-zinc-500 font-medium mb-1">{car.phone}</div>
+                    <div className="inline-block px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase tracking-wider">{car.sellerType}</div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs font-bold ${

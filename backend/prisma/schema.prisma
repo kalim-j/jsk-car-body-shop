@@ -38,6 +38,10 @@ model Car {
   sellerType  String   @default("User")    // "User" | "Dealer"
   sellerId    String
   seller      User     @relation(fields: [sellerId], references: [id])
+  vehicleType String   @default("Car")             // "Car" | "Tipper" | "Truck"
+  year        Int      @default(2024)
+  phone       String   @default("7010587940")     // Contact for seller
+  locationLink String?                             // Google Maps URL
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -65,6 +69,11 @@ model Dealer {
   rating     Float    @default(0.0)
   verified   Boolean  @default(false)
   active     Boolean  @default(true)
+  locationLink String? 
+  experience   String   @default("10+ years")
+  speciality   String   @default("Automotive Care")
+  openingHours String   @default("9 AM - 8 PM")
+  services     String   @default("[]")            // JSON array stored as string
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

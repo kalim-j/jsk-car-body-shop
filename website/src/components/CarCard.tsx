@@ -12,6 +12,10 @@ export interface Car {
   state: string;
   district: string;
   sellerType: string;
+  vehicleType: string;
+  year: number;
+  phone: string;
+  locationLink?: string;
   seller: {
     name: string;
     email: string;
@@ -41,48 +45,72 @@ export function CarCard({ car }: { car: Car }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
-          <span className="rounded-full bg-brand/90 px-3 py-1 text-xs font-black tracking-wider text-white shadow-lg backdrop-blur-sm">
+        <div className="absolute top-4 left-4 flex flex-col gap-2">
+          <div className="flex gap-2">
+            <span className="rounded-full bg-brand/90 px-3 py-1 text-[10px] font-black tracking-wider text-white shadow-lg backdrop-blur-sm uppercase">
+              {car.vehicleType}
+            </span>
+            <span className="rounded-full bg-black/60 px-3 py-1 text-[10px] font-bold text-white border border-white/10 backdrop-blur-md">
+              {car.year}
+            </span>
+          </div>
+          <span className="self-start rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold text-zinc-300 border border-white/5 backdrop-blur-md">
             {car.brand}
           </span>
-          <span className="rounded-full bg-black/60 px-3 py-1 text-xs font-bold text-white border border-white/10 backdrop-blur-md">
-            {car.condition}
-          </span>
         </div>
+
+        {car.locationLink && (
+          <button 
+            onClick={(e) => { e.stopPropagation(); window.open(car.locationLink, '_blank'); }}
+            className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-[10px] font-bold text-white border border-white/10 backdrop-blur-md hover:bg-brand transition-colors"
+          >
+            <MapPin size={12} />
+            View on Map
+          </button>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="line-clamp-1 text-xl font-black tracking-tight text-foreground group-hover:text-brand transition-colors">
+        <div className="flex justify-between items-start mb-1">
+          <h3 className="line-clamp-1 text-lg font-black tracking-tight text-foreground group-hover:text-brand transition-colors">
             {car.name}
           </h3>
         </div>
         
-        <div className="text-2xl font-black text-white flex items-center mb-4 text-gradient">
-          <IndianRupee size={22} className="mr-1 opacity-80" />
+        <div className="text-xl font-black text-white flex items-center mb-4 text-gradient">
+          <IndianRupee size={18} className="mr-0.5 opacity-80" />
           {car.price.toLocaleString("en-IN")}
         </div>
 
         <div className="space-y-2 mb-6">
-          <div className="flex items-center text-sm font-medium text-zinc-400">
-            <MapPin size={16} className="mr-2 text-brand/70" />
+          <div className="flex items-center text-xs font-medium text-zinc-400">
+            <MapPin size={14} className="mr-2 text-brand/70" />
             <span className="line-clamp-1">{car.district}, {car.state}</span>
           </div>
-          <div className="flex items-center justify-between text-sm text-zinc-500 font-medium bg-black/20 p-2 rounded-lg border border-white/5">
+          <div className="flex items-center justify-between text-[11px] text-zinc-500 font-medium bg-black/20 p-2 rounded-lg border border-white/5">
             <div className="flex items-center">
-              <ShieldCheck size={16} className="mr-2 text-blue-400" />
+              <ShieldCheck size={14} className="mr-2 text-blue-400" />
               <span>{car.sellerType} Listing</span>
             </div>
+            <span className="text-zinc-600 font-bold">{car.condition}</span>
           </div>
         </div>
 
-        <button 
-          onClick={() => window.location.href = `mailto:${car.seller.email}`}
-          className="mt-auto flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 py-3 text-sm font-bold text-foreground transition-colors hover:bg-brand hover:text-white"
-        >
-          <Contact size={18} />
-          Contact Seller
-        </button>
+        <div className="grid grid-cols-2 gap-2 mt-auto">
+          <button 
+            onClick={() => window.location.href = `tel:${car.phone}`}
+            className="flex items-center justify-center gap-2 rounded-xl bg-brand py-3 text-xs font-bold text-white transition-all hover:bg-brand-light shadow-lg shadow-brand/10"
+          >
+            <Contact size={16} />
+            Call Seller
+          </button>
+          <button 
+            onClick={() => window.location.href = `mailto:${car.seller.email}`}
+            className="flex items-center justify-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 py-3 text-xs font-bold text-foreground transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700"
+          >
+            Email
+          </button>
+        </div>
       </div>
     </motion.div>
   );

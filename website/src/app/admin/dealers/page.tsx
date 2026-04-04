@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MapPin, Clock } from "lucide-react";
 import { ALL_STATES, INDIAN_STATES } from "../../../lib/indianStates";
 import { ClientCreateDealerForm, ClientUpdateDealerForm } from "./ClientForms";
 
@@ -81,25 +82,31 @@ function DealerCard({ dealer }: { dealer: any }) {
   return (
     <div className="rounded-2xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:bg-zinc-900/40">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="font-black">{dealer.name}</h3>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">
-            {dealer.district}, {dealer.state}
+        <div className="flex-1">
+          <h3 className="font-black text-lg">{dealer.name}</h3>
+          <div className="mt-1 flex items-center gap-1.5 text-xs font-bold text-zinc-500 uppercase tracking-widest">
+            {dealer.experience || "10+ Yrs"} · {dealer.speciality || "Dealer"}
+          </div>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
+            <MapPin size={14} className="text-brand" /> {dealer.district}, {dealer.state}
           </p>
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-zinc-500 font-medium">
             {dealer.phone} · {dealer.email}
           </p>
+          <div className="mt-3 flex items-center gap-2 text-[10px] font-black text-brand uppercase tracking-tighter bg-brand/5 w-fit px-2 py-0.5 rounded border border-brand/10">
+            <Clock size={10} /> {dealer.openingHours || "9 AM - 8 PM"}
+          </div>
           {Array.isArray(dealer.brands) && dealer.brands.length > 0 && (
-             <div className="mt-2 flex flex-wrap gap-1">
+             <div className="mt-3 flex flex-wrap gap-1">
                {dealer.brands.map((b: string) => (
-                 <span key={b} className="text-[10px] bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-zinc-600 dark:text-zinc-300">{b}</span>
+                 <span key={b} className="text-[9px] bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-zinc-600 dark:text-zinc-300 font-bold">{b}</span>
                ))}
              </div>
           )}
         </div>
         <span
           className={[
-            "rounded-full px-3 py-1 text-xs font-bold",
+            "rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest",
             dealer.active ? "bg-emerald-600/10 text-emerald-700" : "bg-zinc-600/10 text-zinc-700",
           ].join(" ")}
         >
