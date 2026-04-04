@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GalleryGrid } from "../components/GalleryGrid";
 import { FeaturedDealer } from "../components/FeaturedDealer";
 import { FeaturedVehicles } from "../components/FeaturedVehicles";
+import { RepairShowcase } from "../components/RepairShowcase";
 import { business } from "../config/business";
 import { ArrowRight, Phone, MessageSquare, Shield, Paintbrush, Wrench, Sparkles, Truck } from "lucide-react";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
@@ -130,6 +131,9 @@ export default function Home() {
 
       {/* Featured Dealer */}
       <FeaturedDealer />
+
+      {/* Repair Showcase Section */}
+      <RepairShowcase />
 
       {/* Featured Inventory */}
       <FeaturedVehicles />

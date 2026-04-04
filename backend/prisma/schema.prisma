@@ -9,13 +9,13 @@ datasource db {
 
 model User {
   id           String    @id @default(cuid())
-  name         String?
   email        String    @unique
   passwordHash String
-  role         Role      @default(USER)
+  role         Role      @default("USER")
   createdAt    DateTime  @default(now())
-  sessions     Session[]
+  name         String?
   cars         Car[]
+  sessions     Session[]
 }
 
 model Session {
@@ -26,24 +26,24 @@ model Session {
 }
 
 model Car {
-  id          String   @id @default(cuid())
-  name        String
-  brand       String
-  price       Int
-  condition   String   @default("Used") // "New" | "Used" | "Repaired"
-  images      String   @default("[]")   // JSON string of Image URLs
-  state       String
-  district    String
-  status      String   @default("Pending") // "Pending" | "Approved" | "Rejected"
-  sellerType  String   @default("User")    // "User" | "Dealer"
-  sellerId    String
-  seller      User     @relation(fields: [sellerId], references: [id])
-  vehicleType String   @default("Car")             // "Car" | "Tipper" | "Truck"
-  year        Int      @default(2024)
-  phone       String   @default("7010587940")     // Contact for seller
-  locationLink String?                             // Google Maps URL
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  brand        String
+  price        Int
+  condition    String   @default("Used")
+  images       String   @default("[]")
+  state        String
+  district     String
+  status       String   @default("Pending")
+  sellerType   String   @default("User")
+  sellerId     String
+  vehicleType  String   @default("Car")
+  year         Int      @default(2024)
+  phone        String   @default("7010587940")
+  locationLink String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  seller       User     @relation(fields: [sellerId], references: [id])
 }
 
 model Product {
@@ -57,29 +57,39 @@ model Product {
 }
 
 model Dealer {
-  id         String   @id @default(cuid())
-  name       String
-  state      String
-  district   String
-  phone      String
-  email      String
-  brands     String   @default("[]") // JSON array stored as string
-  dealerType String   @default("Both") // "New" | "Used" | "Both" | "Luxury"
-  imageUrl   String?
-  rating     Float    @default(0.0)
-  verified   Boolean  @default(false)
-  active     Boolean  @default(true)
-  locationLink String? 
+  id           String   @id @default(cuid())
+  name         String
+  state        String
+  district     String
+  phone        String
+  email        String
+  brands       String   @default("[]")
+  dealerType   String   @default("Both")
+  imageUrl     String?
+  rating       Float    @default(0.0)
+  verified     Boolean  @default(false)
+  active       Boolean  @default(true)
+  locationLink String?
   experience   String   @default("10+ years")
   speciality   String   @default("Automotive Care")
   openingHours String   @default("9 AM - 8 PM")
-  services     String   @default("[]")            // JSON array stored as string
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  services     String   @default("[]")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model RepairJob {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  vehicleType String   @default("Car")
+  beforeImage String
+  afterImage  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum Role {
   USER
   ADMIN
 }
-
