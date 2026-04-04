@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
-import { prisma } from "./prisma";
+import { prisma } from "./prisma.js";
 
 export const ADMIN_EMAILS = new Set([
   "jskjageer@gmail.com",

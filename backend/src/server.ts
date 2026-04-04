@@ -4,8 +4,8 @@ import cors from "cors";
 import express from "express";
 import { z } from "zod";
 
-import { createSessionToken, ensureUser, getUserFromToken, loginSchema, signupSchema, verifyPassword } from "./auth";
-import { prisma } from "./prisma";
+import { createSessionToken, ensureUser, getUserFromToken, loginSchema, signupSchema, verifyPassword } from "./auth.js";
+import { prisma } from "./prisma.js";
 
 const app = express();
 app.use(express.json());
