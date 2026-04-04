@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
   const out = NextResponse.json({ ok: true, user: data.user });
   out.cookies.set(AUTH_COOKIE_NAME, token, {
-    httpOnly: true,
+    httpOnly: false,
     sameSite: "lax",
     path: "/",
     secure: false,
