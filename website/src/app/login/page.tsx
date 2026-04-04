@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { BrandLogo } from "../../components/BrandLogo";
 import {
   Lock,
   Mail,
@@ -15,7 +16,9 @@ import {
   ShieldCheck,
   Sparkles,
   UserPlus,
-  User
+  User,
+  CheckCircle,
+  Gem
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -77,7 +80,7 @@ export default function LoginPage() {
     <div className="bg-background min-h-screen flex text-foreground overflow-hidden">
       
       {/* Left Side: Split-screen Graphic */}
-      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-black border-r border-brand/20">
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-black border-r border-brand/10">
         <motion.div
            initial={{ scale: 1.1 }}
            animate={{ scale: 1 }}
@@ -98,7 +101,7 @@ export default function LoginPage() {
           <Link href="/" className="inline-flex items-center gap-2 mb-8 text-sm font-bold text-zinc-400 hover:text-white transition-colors">
             <ArrowLeft size={16} /> Return to Showroom
           </Link>
-          <h2 className="text-4xl font-black text-white leading-tight mb-4 text-gradient">
+          <h2 className="text-4xl font-black text-white leading-tight mb-4 metallic-gold font-arabic-heading">
             Engineering Precision. <br /> Redefining Excellence.
           </h2>
           <p className="text-zinc-400">
@@ -121,11 +124,11 @@ export default function LoginPage() {
         >
           {/* Header */}
           <div className="text-center lg:text-left mb-8">
-            <div className="mx-auto lg:mx-0 mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand shadow-[0_0_20px_rgba(225,29,72,0.2)]">
-              <ShieldCheck size={28} />
+            <div className="mx-auto lg:mx-0 mb-8">
+              <BrandLogo size={160} />
             </div>
-            <h1 className="text-3xl font-black tracking-tight text-foreground">
-              {mode === "login" ? "Sign In" : "Create Account"}
+            <h1 className="text-3xl font-black tracking-tight text-white font-arabic-heading uppercase italic">
+              {mode === "login" ? "Staff Entrance" : "Global Registry"}
             </h1>
             <p className="mt-2 text-sm text-zinc-500">
               {mode === "login" ? "Access your JSK dealership account" : "Join the global car marketplace platform"}
@@ -135,15 +138,15 @@ export default function LoginPage() {
           <div className="flex gap-2 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl mb-8">
             <button 
               onClick={() => { setMode("login"); setError(null); }}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${mode === "login" ? "bg-white dark:bg-zinc-800 shadow-sm text-brand" : "text-zinc-500 hover:text-foreground"}`}
+              className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${mode === "login" ? "bg-brand text-black shadow-lg gold-glow" : "text-zinc-500 hover:text-white"}`}
             >
-              Sign In
+              Access
             </button>
             <button 
               onClick={() => { setMode("signup"); setError(null); }}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${mode === "signup" ? "bg-white dark:bg-zinc-800 shadow-sm text-brand" : "text-zinc-500 hover:text-foreground"}`}
+              className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-lg transition-all ${mode === "signup" ? "bg-brand text-black shadow-lg gold-glow" : "text-zinc-500 hover:text-white"}`}
             >
-              Sign Up
+              Registry
             </button>
           </div>
 
@@ -275,7 +278,7 @@ export default function LoginPage() {
               whileTap={!loading && !success ? { scale: 0.98 } : {}}
               disabled={loading || success}
               type="submit"
-              className="group relative mt-6 flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl bg-brand py-4 text-sm font-black text-white transition-all hover:bg-brand-light neon-glow disabled:opacity-70 disabled:cursor-wait"
+              className="group relative mt-6 flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl bg-brand py-4 text-xs font-black uppercase tracking-widest text-black transition-all hover:bg-brand-light gold-glow disabled:opacity-70 disabled:cursor-wait"
             >
               {loading ? (
                 <>

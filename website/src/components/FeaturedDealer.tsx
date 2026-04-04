@@ -24,7 +24,7 @@ export function FeaturedDealer() {
   return (
     <section className="container mx-auto px-6 py-20">
       <div className="mb-12 text-center lg:text-left">
-        <h2 className="text-gradient text-3xl font-black tracking-tight sm:text-5xl">Featured Local Dealer</h2>
+        <h2 className="text-gradient text-3xl font-black tracking-tight sm:text-5xl font-arabic-heading">Featured Excellence</h2>
         <p className="mt-4 max-w-2xl text-zinc-500 lg:mx-0 mx-auto">
           Trusted car repair and second-hand vehicle dealer with {dealer.experience} of experience.
         </p>
@@ -35,9 +35,9 @@ export function FeaturedDealer() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="group relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-zinc-900/40 p-1 glass transition-all duration-500 hover:border-brand/40 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(225,29,72,0.3)]"
+        className="group relative overflow-hidden rounded-[2.5rem] border border-brand/20 bg-zinc-900/40 p-1 glass transition-all duration-500 hover:border-brand/40 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(212,175,55,0.3)] geometric-bg"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         
         <div className="relative flex flex-col lg:flex-row gap-8 lg:gap-12 p-6 lg:p-10 z-10">
           
@@ -47,11 +47,11 @@ export function FeaturedDealer() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             
             <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 text-xs font-bold text-white shadow-lg">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md border border-brand/20 px-3 py-1.5 text-xs font-bold text-brand shadow-lg">
                 <Star size={14} className="fill-brand text-brand" />
                 {dealer.rating} Rating
               </div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-brand/90 backdrop-blur-md px-3 py-1.5 text-xs font-bold text-white shadow-lg">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-brand backdrop-blur-md px-3 py-1.5 text-xs font-black uppercase tracking-widest text-black shadow-lg">
                 <ShieldCheck size={14} />
                 Verified
               </div>
@@ -61,17 +61,17 @@ export function FeaturedDealer() {
           {/* Content */}
           <div className="flex-1 flex flex-col justify-center">
             
-            <div className="mb-2 flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-zinc-800 px-3 py-1 text-xs font-bold text-zinc-300">
-                <Award size={12} className="text-amber-400" />
-                Trusted Local Business
+            <div className="mb-4 flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-zinc-800/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-[#D4AF37] border border-brand/30">
+                <Award size={12} className="text-brand" />
+                Trusted Showroom
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 border border-brand/20 px-3 py-1 text-xs font-bold text-brand">
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-black">
                 {dealer.type}
               </span>
             </div>
 
-            <h3 className="text-3xl lg:text-4xl font-black text-white mb-2">{dealer.name}</h3>
+            <h3 className="text-4xl lg:text-5xl font-black mb-4 metallic-gold font-arabic-heading uppercase italic tracking-tighter">{dealer.name}</h3>
             
             <div className="flex items-center gap-2 text-zinc-400 text-sm mb-6 pb-6 border-b border-white/10">
               <MapPin size={16} />
@@ -114,10 +114,10 @@ export function FeaturedDealer() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 href={`tel:${dealer.phone[0]}`}
-                className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white transition-all hover:bg-brand-light neon-glow shadow-lg shadow-brand/20"
+                className="inline-flex flex-1 sm:flex-none items-center justify-center gap-3 rounded-xl bg-brand px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-black transition-all hover:bg-brand-light gold-glow shadow-xl shadow-brand/20"
               >
                 <Phone size={16} />
-                Call Now
+                Connect Now
               </motion.a>
               <motion.a
                 whileHover={{ scale: 1.05 }}
@@ -125,16 +125,16 @@ export function FeaturedDealer() {
                 href={dealer.location_link}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-white/10"
+                className="inline-flex flex-1 sm:flex-none items-center justify-center gap-3 rounded-xl border border-brand/30 bg-brand/5 px-8 py-4 text-xs font-black uppercase tracking-[0.2em] text-brand transition-all hover:bg-brand/10"
               >
                 <Map size={16} />
-                View Location
+                Showroom Map
               </motion.a>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 text-sm font-bold text-zinc-400 hover:text-brand transition-colors px-4 py-3 ml-auto"
+                className="inline-flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.1em] text-zinc-500 hover:text-brand transition-colors px-4 py-3 ml-auto"
               >
-                Contact Dealer →
+                Inquiry Terminal →
               </Link>
             </div>
 

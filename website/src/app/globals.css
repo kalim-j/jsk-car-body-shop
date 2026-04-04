@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..900&family=El+Messiri:wght@400..700&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -9,70 +10,88 @@
   --color-border: var(--border);
   --color-brand: var(--brand);
   --color-brand-light: var(--brand-light);
+  --color-brand-accent: var(--brand-accent);
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system;
+  --font-cairo: 'Cairo', sans-serif;
+  --font-messiri: 'El Messiri', sans-serif;
 }
 
 :root {
-  /* Light Mode defaults (Very clean white/gray) */
+  /* Luxury Gold & Black Theme */
   --background: #ffffff;
-  --foreground: #09090b;
-  --card: #f4f4f5;
-  --border: #e4e4e7;
-  --brand: #e11d48;
-  --brand-light: #fb7185;
-  --glass: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.05);
+  --foreground: #050505;
+  --card: #f8f8f8;
+  --border: #e0e0e0;
+  --brand: #D4AF37;
+  --brand-light: #E5C76B;
+  --brand-accent: #8B0000;
+  --glass: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(212, 175, 55, 0.2);
 }
 
 .dark {
-  /* Dark Mode (High-end Automotive Dark) */
+  /* High-End Arabic Showroom Dark */
   --background: #050505;
-  --foreground: #f0f0f0;
-  --card: #111111;
-  --border: #222222;
-  --brand: #e11d48;
-  --brand-light: #fb7185;
-  --glass: rgba(10, 10, 10, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --foreground: #f4f4f4;
+  --card: #0a0a0a;
+  --border: #1a1a1a;
+  --brand: #D4AF37;
+  --brand-light: #E5C76B;
+  --brand-accent: #8B0000;
+  --glass: rgba(5, 5, 5, 0.8);
+  --glass-border: rgba(212, 175, 55, 0.15);
 }
 
 body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-cairo);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Custom Utilities */
+/* Custom Typography */
+.font-arabic-heading {
+  font-family: var(--font-messiri);
+  letter-spacing: -0.02em;
+}
+
+/* Luxury Utilities */
 .glass {
   background: var(--glass);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
 }
 
-.text-gradient {
-  background: linear-gradient(to bottom right, var(--color-foreground), #888888);
+.metallic-gold {
+  background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
   -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.gold-glow {
+  box-shadow: 0 0 25px -5px rgba(212, 175, 55, 0.4);
+}
+
+.gold-border {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.geometric-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.text-gradient {
+  background: linear-gradient(to bottom right, var(--color-foreground), var(--brand));
+  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.showroom-glow {
-  box-shadow: 0 0 40px -10px rgba(225, 29, 72, 0.2);
-}
-
-.neon-glow {
-  box-shadow: 0 0 15px 2px rgba(225, 29, 72, 0.4), 0 0 40px 5px rgba(225, 29, 72, 0.1);
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

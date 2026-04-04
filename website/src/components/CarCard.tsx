@@ -34,7 +34,7 @@ export function CarCard({ car }: { car: Car }) {
   return (
     <motion.div 
       whileHover={{ y: -5, scale: 1.02 }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border/50 shadow-lg transition-all hover:shadow-brand/20 hover:border-brand/40"
+      className="group relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border/50 shadow-lg transition-all hover:shadow-brand/20 hover:border-brand/40 geometric-bg lg:bg-card/40 backdrop-blur-sm"
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900">
         <img 
@@ -47,14 +47,14 @@ export function CarCard({ car }: { car: Car }) {
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-2">
           <div className="flex gap-2">
-            <span className="rounded-full bg-brand/90 px-3 py-1 text-[10px] font-black tracking-wider text-white shadow-lg backdrop-blur-sm uppercase">
+            <span className="rounded-full bg-brand px-3 py-1 text-[10px] font-black tracking-[0.15em] text-black shadow-lg backdrop-blur-sm uppercase italic">
               {car.vehicleType}
             </span>
             <span className="rounded-full bg-black/60 px-3 py-1 text-[10px] font-bold text-white border border-white/10 backdrop-blur-md">
               {car.year}
             </span>
           </div>
-          <span className="self-start rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold text-zinc-300 border border-white/5 backdrop-blur-md">
+          <span className="self-start rounded-full bg-black/60 px-3 py-1 text-[10px] font-bold text-brand border border-brand/20 backdrop-blur-md uppercase tracking-tighter">
             {car.brand}
           </span>
         </div>
@@ -77,7 +77,7 @@ export function CarCard({ car }: { car: Car }) {
           </h3>
         </div>
         
-        <div className="text-xl font-black text-white flex items-center mb-4 text-gradient">
+        <div className="text-xl font-black flex items-center mb-4 metallic-gold font-arabic-heading">
           <IndianRupee size={18} className="mr-0.5 opacity-80" />
           {car.price.toLocaleString("en-IN")}
         </div>
@@ -99,16 +99,16 @@ export function CarCard({ car }: { car: Car }) {
         <div className="grid grid-cols-2 gap-2 mt-auto">
           <button 
             onClick={() => window.location.href = `tel:${car.phone}`}
-            className="flex items-center justify-center gap-2 rounded-xl bg-brand py-3 text-xs font-bold text-white transition-all hover:bg-brand-light shadow-lg shadow-brand/10"
+            className="flex items-center justify-center gap-2 rounded-xl bg-brand py-3 text-xs font-black uppercase tracking-widest text-black transition-all hover:bg-brand-light shadow-lg gold-glow"
           >
             <Contact size={16} />
-            Call Seller
+            Connect
           </button>
           <button 
             onClick={() => window.location.href = `mailto:${car.seller.email}`}
-            className="flex items-center justify-center gap-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 py-3 text-xs font-bold text-foreground transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-700"
+            className="flex items-center justify-center gap-2 rounded-xl border border-brand/20 bg-brand/5 py-3 text-xs font-black uppercase tracking-widest text-brand transition-colors hover:bg-brand/10"
           >
-            Email
+            Inquiry
           </button>
         </div>
       </div>

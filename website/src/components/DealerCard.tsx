@@ -30,19 +30,19 @@ export function DealerCard({ dealer }: { dealer: Dealer }) {
     <motion.div 
       whileHover={{ y: -8, scale: 1.02 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:border-brand/50 transition-colors duration-300 group shadow-lg shadow-black/20 hover:showroom-glow flex flex-col h-full"
+      className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:border-brand/50 transition-colors duration-300 group shadow-lg shadow-black/20 hover:gold-glow flex flex-col h-full geometric-bg"
     >
       <Link href={`/dealers/${dealer.id}`} className="p-6 flex flex-col flex-1">
         <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-2">
-            <h3 className="text-xl font-bold text-foreground group-hover:text-brand transition-colors line-clamp-1">
+            <h3 className="text-xl font-black group-hover:text-brand transition-colors line-clamp-1 metallic-gold font-arabic-heading">
               {dealer.name}
             </h3>
             {dealer.verified && (
               <BadgeCheck size={18} className="text-blue-400 shrink-0" fill="currentColor" stroke="black" />
             )}
           </div>
-          <span className="inline-flex items-center rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-semibold text-brand ring-1 ring-inset ring-brand/20 shrink-0 ml-2">
+          <span className="inline-flex items-center rounded-full bg-brand px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-black ring-1 ring-inset ring-brand/20 shrink-0 ml-2 italic">
             {dealer.dealerType}
           </span>
         </div>
@@ -93,10 +93,10 @@ export function DealerCard({ dealer }: { dealer: Dealer }) {
           <a
             href={`tel:${dealer.phone}`}
             onClick={(e) => e.stopPropagation()}
-            className="flex-[2] flex items-center justify-center gap-2 bg-brand text-white px-4 py-2.5 rounded-xl text-sm font-black hover:bg-brand-light transition-all shadow-[0_0_15px_rgba(225,29,72,0.2)] hover:shadow-[0_0_25px_rgba(225,29,72,0.4)]"
+            className="flex-[2] flex items-center justify-center gap-2 bg-brand text-black px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-brand-light transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)] gold-glow"
           >
             <Phone size={16} />
-            Call Now
+            Connect
           </a>
         </div>
       </Link>

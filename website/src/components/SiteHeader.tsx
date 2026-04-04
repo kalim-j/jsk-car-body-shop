@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
-import { Logo } from "./Logo";
+import { BrandLogo } from "./BrandLogo";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
@@ -40,10 +40,10 @@ export function SiteHeader() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className="sticky top-0 z-50 border-b border-black/5 dark:border-white/5 bg-white/60 dark:bg-black/60 shadow-sm backdrop-blur-xl"
+      className="sticky top-0 z-50 border-b border-brand/10 bg-white/70 dark:bg-black/70 shadow-sm backdrop-blur-xl"
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Logo />
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
+        <BrandLogo size={140} />
 
         <nav className="hidden md:flex items-center gap-1">
           {NAV_ITEMS.map((item) => {
@@ -53,16 +53,16 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={[
-                  "rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 relative",
+                  "rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 relative uppercase tracking-widest font-arabic-heading",
                   isActive
                     ? "text-brand"
-                    : "text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5",
+                    : "text-zinc-600 dark:text-zinc-400 hover:text-brand dark:hover:text-brand",
                 ].join(" ")}
               >
                 {isActive && (
                   <motion.div
                     layoutId="active-nav-pill"
-                    className="absolute inset-0 bg-brand/10 dark:bg-brand/20 rounded-full"
+                    className="absolute inset-0 bg-brand/5 dark:bg-brand/10 rounded-full border border-brand/20 gold-glow"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
@@ -76,7 +76,7 @@ export function SiteHeader() {
           {mounted && (
             <button
               type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-foreground hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-brand/20 bg-brand/5 text-brand hover:bg-brand/10 transition-colors"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               aria-label="Toggle Dark Mode"
             >

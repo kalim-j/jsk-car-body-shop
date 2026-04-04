@@ -47,8 +47,8 @@ export default function Home() {
       <section className="relative flex min-h-[85vh] items-center overflow-hidden">
         {/* Background Effects with Parallax */}
         <motion.div style={{ y: yHeroBg }} className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(225,29,72,0.15),transparent_70%)]" />
-          <div className="absolute bottom-0 h-px w-full bg-gradient-to-r from-transparent via-brand/40 to-transparent shadow-[0_0_20px_rgba(225,29,72,0.5)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.1),transparent_70%)]" />
+          <div className="absolute bottom-0 h-px w-full bg-gradient-to-r from-transparent via-brand/40 to-transparent shadow-[0_0_20px_rgba(212,175,55,0.3)]" />
         </motion.div>
 
         <motion.div 
@@ -60,7 +60,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-5 py-2 text-xs font-bold tracking-widest text-brand uppercase"
+              className="mb-8 inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/5 px-5 py-2 text-xs font-black tracking-widest text-brand uppercase"
             >
               <span className="relative flex h-2.5 w-2.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-75"></span>
@@ -73,10 +73,10 @@ export default function Home() {
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
-              className="text-gradient text-5xl font-black leading-[1.1] tracking-tight sm:text-7xl lg:text-8xl"
+              className="text-gradient text-5xl font-black leading-[1.1] tracking-tight sm:text-7xl lg:text-8xl font-arabic-heading"
             >
-              {Array.from("JSK Car Body Shop").map((letter, i) => (
-                <motion.span key={i} variants={textTypingVariant} inline-block>
+              {Array.from("JSK Motors").map((letter, i) => (
+                <motion.span key={i} variants={textTypingVariant} inline-block className="metallic-gold">
                   {letter === " " ? "\u00A0" : letter}
                 </motion.span>
               ))}
@@ -109,7 +109,7 @@ export default function Home() {
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="/contact"
-                  className="group inline-flex items-center justify-center gap-2 rounded-full bg-brand px-8 py-4 text-sm font-bold text-white transition-all hover:bg-brand-light neon-glow"
+                  className="group inline-flex items-center justify-center gap-2 rounded-full bg-brand px-8 py-4 text-sm font-black uppercase tracking-widest text-black transition-all hover:bg-brand-light gold-glow shadow-xl shadow-brand/20"
                 >
                   Get a Quote
                   <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
@@ -145,7 +145,7 @@ export default function Home() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={fadeUpVariant}
-          className="mb-16 flex flex-col items-center justify-between gap-6 lg:flex-row lg:items-end"
+          className="mb-16 flex flex-col items-center justify-between gap-6 lg:flex-row lg:items-end border-b border-brand/10 pb-8"
         >
           <div className="text-center lg:text-left">
             <h2 className="text-gradient text-4xl font-black tracking-tight sm:text-5xl">Our Excellence</h2>
@@ -173,9 +173,9 @@ export default function Home() {
                 variants={fadeUpVariant}
                 whileHover={{ y: -10, transition: { duration: 0.2 } }}
                 key={s.title}
-                className="group relative rounded-3xl border border-white/5 bg-zinc-900/40 dark:bg-card/40 p-8 transition-all hover:border-brand/40 glass hover:showroom-glow"
+                className="group relative rounded-3xl border border-white/5 bg-zinc-900/40 dark:bg-card/40 p-8 transition-all hover:border-brand/40 glass hover:gold-glow"
               >
-                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
+                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-black">
                   <Icon size={24} />
                 </div>
                 <h3 className="text-xl font-bold text-foreground">{s.title}</h3>
@@ -234,7 +234,7 @@ export default function Home() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 href="/contact"
-                className="rounded-full bg-brand px-10 py-5 text-sm font-black text-white hover:bg-brand-light transition-colors neon-glow"
+                className="rounded-full bg-brand px-10 py-5 text-sm font-black uppercase tracking-widest text-black hover:bg-brand-light transition-colors gold-glow"
               >
                 Get Started Now
               </Link>
@@ -271,7 +271,7 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/sell"
-                className="rounded-full bg-brand px-12 py-5 text-sm font-black text-white hover:bg-brand-light transition-all neon-glow shadow-xl"
+                className="rounded-full bg-brand px-12 py-5 text-sm font-black uppercase tracking-widest text-black hover:bg-brand-light transition-all gold-glow shadow-xl"
               >
                 Start Selling Now
               </Link>
