@@ -9,11 +9,13 @@ datasource db {
 
 model User {
   id           String    @id @default(cuid())
+  name         String?
   email        String    @unique
   passwordHash String
   role         Role      @default(USER)
   createdAt    DateTime  @default(now())
   sessions     Session[]
+  cars         Car[]
 }
 
 model Session {
@@ -21,6 +23,23 @@ model Session {
   userId    String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Car {
+  id          String   @id @default(cuid())
+  name        String
+  brand       String
+  price       Int
+  condition   String   @default("Used") // "New" | "Used" | "Repaired"
+  images      String   @default("[]")   // JSON string of Image URLs
+  state       String
+  district    String
+  status      String   @default("Pending") // "Pending" | "Approved" | "Rejected"
+  sellerType  String   @default("User")    // "User" | "Dealer"
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Product {

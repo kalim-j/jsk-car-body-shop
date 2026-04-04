@@ -37,7 +37,7 @@ export default async function AdminDealersPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="flex gap-4 mb-4 text-lg font-bold">
-            <Link href="/admin/products" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300 pb-1">Products</Link>
+            <Link href="/admin/cars" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300 pb-1">Cars</Link>
             <Link href="/admin/dealers" className="text-zinc-900 dark:text-zinc-50 border-b-2 border-brand pb-1">Dealers</Link>
           </div>
           <h1 className="text-3xl font-black">Admin · Dealers</h1>

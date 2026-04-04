@@ -14,22 +14,33 @@ export const loginSchema = z.object({
   password: z.string().min(6),
 });
 
+export const signupSchema = z.object({
+  name: z.string().min(1).optional(),
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
 function getJwtSecret() {
   const secret = process.env.JWT_SECRET;
   if (!secret) return "dev-change-me";
   return secret;
 }
 
-export async function ensureUser(email: string, password: string) {
+export async function ensureUser(email: string, password: string, name?: string) {
   const normalizedEmail = email.trim().toLowerCase();
   const role = ADMIN_EMAILS.has(normalizedEmail) ? "ADMIN" : "USER";
 
   const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-  if (existing) return existing;
+  if (existing) {
+    if (name && !existing.name) {
+      return prisma.user.update({ where: { id: existing.id }, data: { name } });
+    }
+    return existing;
+  }
 
   const passwordHash = await bcrypt.hash(password, 10);
   return prisma.user.create({
-    data: { email: normalizedEmail, passwordHash, role },
+    data: { name, email: normalizedEmail, passwordHash, role },
   });
 }
 

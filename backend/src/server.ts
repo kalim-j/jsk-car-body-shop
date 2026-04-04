@@ -4,7 +4,7 @@ import cors from "cors";
 import express from "express";
 import { z } from "zod";
 
-import { createSessionToken, ensureUser, getUserFromToken, loginSchema, verifyPassword } from "./auth";
+import { createSessionToken, ensureUser, getUserFromToken, loginSchema, signupSchema, verifyPassword } from "./auth";
 import { prisma } from "./prisma";
 
 const app = express();
@@ -77,42 +77,115 @@ app.post("/auth/login", async (req, res) => {
 });
 
 app.get("/me", authMiddleware, async (req, res) => {
-  const user = (req as any).user as { email: string; role: string };
-  res.json({ email: user.email, role: user.role });
+  const user = (req as any).user;
+  res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
 });
 
-// Public product list
-app.get("/products", async (_req, res) => {
-  const products = await prisma.product.findMany({ where: { active: true }, orderBy: { updatedAt: "desc" } });
-  res.json({ products });
+app.post("/auth/signup", async (req, res) => {
+  const parsed = signupSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+  const existing = await prisma.user.findUnique({ where: { email: parsed.data.email.trim().toLowerCase() } });
+  if (existing) return res.status(400).json({ error: "Email already in use" });
+
+  const user = await ensureUser(parsed.data.email, parsed.data.password, parsed.data.name);
+  const { token } = await createSessionToken(user.id);
+  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 });
 
-// Admin product management
-const productUpsertSchema = z.object({
+// ── Cars Marketplace ────────────────────────────────────────────────────────
+
+const carFilterSchema = z.object({
+  state: z.string().optional(),
+  district: z.string().optional(),
+  brand: z.string().optional(), // Can also be comma separated
+  condition: z.string().optional(),
+  minPrice: z.coerce.number().optional(),
+  maxPrice: z.coerce.number().optional()
+});
+
+app.get("/cars", async (req, res) => {
+  const { state, district, brand, condition, minPrice, maxPrice } = req.query as Record<string, string>;
+  const brandList = brand ? (typeof brand === 'string' ? brand.split(',') : brand) : [];
+
+  const cars = await prisma.car.findMany({
+    where: {
+      status: "Approved",
+      ...(state && { state }),
+      ...(district && { district }),
+      ...(condition && { condition }),
+      ...(brandList.length > 0 && { brand: { in: brandList as string[] } }),
+      ...(minPrice && { price: { gte: Number(minPrice) } }),
+      ...(maxPrice && { price: { lte: Number(maxPrice) } }),
+    },
+    include: {
+      seller: {
+        select: { name: true, email: true }
+      }
+    },
+    orderBy: { createdAt: "desc" }
+  });
+
+  res.json({ cars });
+});
+
+const uploadCarSchema = z.object({
   name: z.string().min(1),
-  description: z.string().min(1),
-  priceCents: z.number().int().min(0).default(0),
-  active: z.boolean().default(true),
+  brand: z.string().min(1),
+  price: z.number().int().min(0),
+  condition: z.enum(["New", "Used", "Repaired"]),
+  images: z.array(z.string()).default([]),
+  state: z.string().min(1),
+  district: z.string().min(1),
 });
 
-app.post("/products", authMiddleware, adminOnly, async (req, res) => {
-  const parsed = productUpsertSchema.safeParse(req.body);
+app.post("/cars/sell", authMiddleware, async (req, res) => {
+  const parsed = uploadCarSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-  const created = await prisma.product.create({ data: parsed.data });
-  res.json({ product: created });
+  
+  const user = (req as any).user;
+  const created = await prisma.car.create({
+    data: {
+      ...parsed.data,
+      images: JSON.stringify(parsed.data.images),
+      sellerId: user.id,
+      sellerType: user.role === "ADMIN" ? "Dealer" : "User",
+      // Admins auto-approve their own uploads
+      status: user.role === "ADMIN" ? "Approved" : "Pending"
+    }
+  });
+
+  res.json({ car: created });
 });
 
-app.put("/products/:id", authMiddleware, adminOnly, async (req, res) => {
-  const parsed = productUpsertSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
-  const updated = await prisma.product.update({ where: { id: req.params.id }, data: parsed.data });
-  res.json({ product: updated });
+app.get("/admin/cars", authMiddleware, adminOnly, async (_req, res) => {
+  const cars = await prisma.car.findMany({
+    include: {
+      seller: { select: { name: true, email: true } }
+    },
+    orderBy: { createdAt: "desc" }
+  });
+  res.json({ cars });
 });
 
-app.delete("/products/:id", authMiddleware, adminOnly, async (req, res) => {
-  await prisma.product.delete({ where: { id: req.params.id } });
+app.put("/admin/cars/:id/status", authMiddleware, adminOnly, async (req, res) => {
+  const { status } = req.body;
+  if (!["Pending", "Approved", "Rejected"].includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+  const updated = await prisma.car.update({
+    where: { id: req.params.id as string },
+    data: { status }
+  });
+  res.json({ car: updated });
+});
+
+app.delete("/admin/cars/:id", authMiddleware, adminOnly, async (req, res) => {
+  await prisma.car.delete({ where: { id: req.params.id as string } });
   res.json({ ok: true });
 });
+
+
 
 // ── Dealers ────────────────────────────────────────────────────────────────
 

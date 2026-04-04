@@ -10,10 +10,11 @@ import { motion } from "framer-motion";
 
 const NAV_ITEMS: Array<{ href: string; label: string }> = [
   { href: "/", label: "Home" },
+  { href: "/cars", label: "Buy Cars" },
+  { href: "/sell", label: "Sell Car" },
   { href: "/services", label: "Services" },
   { href: "/dealers", label: "Dealers" },
   { href: "/gallery", label: "Gallery" },
-  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
