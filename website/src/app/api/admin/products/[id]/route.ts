@@ -17,14 +17,15 @@ function withAuth(headers: Headers, cookiesHeader: Headers) {
   return headers;
 }
 
-type Params = { params: { id: string } };
+type Params = { params: Promise<{ id: string }> };
 
 export async function PUT(request: Request, { params }: Params) {
+  const resolvedParams = await params;
   const body = await request.json();
   const headers = new Headers({ "content-type": "application/json" });
   const withAuthHeaders = withAuth(headers, new Headers({ cookie: request.headers.get("cookie") ?? "" }));
 
-  const res = await fetch(`${getBackendUrl()}/products/${params.id}`, {
+  const res = await fetch(`${getBackendUrl()}/products/${resolvedParams.id}`, {
     method: "PUT",
     headers: withAuthHeaders,
     body: JSON.stringify(body),
@@ -34,10 +35,11 @@ export async function PUT(request: Request, { params }: Params) {
 }
 
 export async function DELETE(request: Request, { params }: Params) {
+  const resolvedParams = await params;
   const headers = new Headers();
   const withAuthHeaders = withAuth(headers, new Headers({ cookie: request.headers.get("cookie") ?? "" }));
 
-  const res = await fetch(`${getBackendUrl()}/products/${params.id}`, {
+  const res = await fetch(`${getBackendUrl()}/products/${resolvedParams.id}`, {
     method: "DELETE",
     headers: withAuthHeaders,
   });
