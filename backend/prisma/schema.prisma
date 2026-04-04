@@ -33,6 +33,23 @@ model Product {
   updatedAt   DateTime @updatedAt
 }
 
+model Dealer {
+  id         String   @id @default(cuid())
+  name       String
+  state      String
+  district   String
+  phone      String
+  email      String
+  brands     String   @default("[]") // JSON array stored as string
+  dealerType String   @default("Both") // "New" | "Used" | "Both" | "Luxury"
+  imageUrl   String?
+  rating     Float    @default(0.0)
+  verified   Boolean  @default(false)
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
 enum Role {
   USER
   ADMIN

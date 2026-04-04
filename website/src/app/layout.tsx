@@ -4,6 +4,9 @@ import "./globals.css";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteHeader } from "../components/SiteHeader";
 import { QuickActions } from "../components/QuickActions";
+import { Providers } from "../components/Providers";
+import { CustomCursor } from "../components/CustomCursor";
+import { ScrollToTop } from "../components/ScrollToTop";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,12 +38,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-        <QuickActions />
+        <Providers>
+          <CustomCursor />
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+          <QuickActions />
+          <ScrollToTop />
+        </Providers>
       </body>
     </html>
   );

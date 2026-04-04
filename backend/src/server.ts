@@ -114,6 +114,145 @@ app.delete("/products/:id", authMiddleware, adminOnly, async (req, res) => {
   res.json({ ok: true });
 });
 
+// ── Dealers ────────────────────────────────────────────────────────────────
+
+// Public: list dealers with optional filters
+app.get("/dealers", async (req, res) => {
+  const { state, district, brand, dealerType, search } = req.query as Record<string, string>;
+
+  // Convert brand query to an array of specific filters if comma-separated or simple array
+  const brandList = brand ? (typeof brand === 'string' ? brand.split(',') : brand) : [];
+
+  const dealers = await prisma.dealer.findMany({
+    where: {
+      active: true,
+      ...(state && { state }),
+      ...(district && { district }),
+      ...(dealerType && { dealerType }),
+      ...(brandList.length > 0 && {
+        AND: (brandList as string[]).map(b => ({ brands: { contains: b } }))
+      }),
+      ...(search && {
+        OR: [
+          { name: { contains: search } },
+          { state: { contains: search } },
+          { district: { contains: search } },
+        ],
+      }),
+    },
+    orderBy: { name: "asc" },
+  });
+
+  res.json({ dealers });
+});
+
+// Public: get single dealer
+app.get("/dealers/:id", async (req, res) => {
+  const dealer = await prisma.dealer.findUnique({ where: { id: req.params.id } });
+  if (!dealer) return res.status(404).json({ error: "Dealer not found" });
+  res.json({ dealer });
+});
+
+const dealerSchema = z.object({
+  name: z.string().min(1),
+  state: z.string().min(1),
+  district: z.string().min(1),
+  phone: z.string().min(1),
+  email: z.string().email(),
+  brands: z.array(z.string()).default([]),
+  dealerType: z.enum(["New", "Used", "Both", "Luxury"]).default("Both"),
+  imageUrl: z.string().optional(),
+  rating: z.number().min(0).max(5).default(0.0),
+  verified: z.boolean().default(false),
+  active: z.boolean().default(true),
+});
+
+// Admin: create dealer
+app.post("/dealers", authMiddleware, adminOnly, async (req, res) => {
+  const parsed = dealerSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const { brands, ...rest } = parsed.data;
+  const created = await prisma.dealer.create({ data: { ...rest, brands: JSON.stringify(brands) } });
+  res.json({ dealer: { ...created, brands: JSON.parse(created.brands) } });
+});
+
+// Admin: update dealer
+app.put("/dealers/:id", authMiddleware, adminOnly, async (req, res) => {
+  const parsed = dealerSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  const { brands, ...rest } = parsed.data;
+  const updated = await prisma.dealer.update({
+    where: { id: req.params.id },
+    data: { ...rest, brands: JSON.stringify(brands) },
+  });
+  res.json({ dealer: { ...updated, brands: JSON.parse(updated.brands) } });
+});
+
+// Admin: delete dealer
+app.delete("/dealers/:id", authMiddleware, adminOnly, async (req, res) => {
+  await prisma.dealer.delete({ where: { id: req.params.id } });
+  res.json({ ok: true });
+});
+
+// Public: seed sample dealers (dev only — remove in production)
+app.post("/dealers/seed", async (_req, res) => {
+  // Clearing existing sample data to inject new clean mock data
+  await prisma.dealer.deleteMany({});
+  
+  const sample = [
+    {
+      name: "Morya Cars Pvt Ltd",
+      state: "Maharashtra",
+      district: "Mumbai",
+      dealerType: "Used",
+      brands: JSON.stringify(["Hyundai", "Honda", "Maruti Suzuki"]),
+      phone: "9112062000",
+      email: "info@moryacars.com",
+      rating: 4.7,
+      verified: true
+    },
+    {
+      name: "Raj Motors",
+      state: "Maharashtra",
+      district: "Mumbai",
+      dealerType: "Luxury",
+      brands: JSON.stringify(["Toyota", "Kia"]),
+      phone: "9324243639",
+      email: "sales@rajmotors.com",
+      rating: 4.3,
+      verified: true
+    },
+    {
+      name: "Mahindra Randhawa Motors",
+      state: "Maharashtra",
+      district: "Mumbai",
+      dealerType: "New",
+      brands: JSON.stringify(["Mahindra", "Tata Motors"]),
+      phone: "9168300500",
+      email: "contact@randhawamotors.com",
+      rating: 4.8,
+      verified: true
+    },
+    {
+      name: "Maruti Suzuki Arena",
+      state: "Haryana",
+      district: "Gurugram",
+      dealerType: "New",
+      brands: JSON.stringify(["Maruti Suzuki"]),
+      phone: "8062216251",
+      email: "arena.gurgaon@maruti.com",
+      rating: 4.7,
+      verified: true
+    }
+  ];
+  
+  for (const dealer of sample) {
+    await prisma.dealer.create({ data: dealer }).catch(() => {});
+  }
+  
+  res.json({ ok: true, seeded: sample.length });
+});
+
 const port = Number(process.env.PORT || 4000);
 app.listen(port, () => {
   // eslint-disable-next-line no-console

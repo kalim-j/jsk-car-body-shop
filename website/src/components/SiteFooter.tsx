@@ -12,6 +12,7 @@ export function SiteFooter() {
         <div className="flex items-center gap-6">
           <Link href="/services" className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors">Services</Link>
           <Link href="/gallery" className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors">Gallery</Link>
+          <Link href="/dealers" className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors">Dealers</Link>
           <Link href="/contact" className="text-xs font-semibold text-zinc-500 hover:text-white transition-colors">Contact</Link>
           <Link href="/login" className="text-xs font-semibold text-brand hover:text-brand-light transition-colors">Admin Login</Link>
         </div>

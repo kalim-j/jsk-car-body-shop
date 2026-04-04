@@ -34,6 +34,10 @@ export default async function AdminProductsPage() {
     <div className="mx-auto max-w-6xl px-4 py-12">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
+          <div className="flex gap-4 mb-4 text-lg font-bold">
+            <Link href="/admin/products" className="text-zinc-900 dark:text-zinc-50 border-b-2 border-brand pb-1">Products</Link>
+            <Link href="/admin/dealers" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300 pb-1">Dealers</Link>
+          </div>
           <h1 className="text-3xl font-black">Admin · Products</h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
             Only admins can create/update/delete. If you are not an admin, API calls will be rejected.
