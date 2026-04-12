@@ -9,20 +9,23 @@ import { formatPrice } from "@/lib/utils";
 import { sampleCars } from "@/lib/sampleData";
 import type { Car } from "@/lib/firestore";
 
-export default function CarDetailPage({ params }: { params: { id: string } }) {
+import { use } from "react";
+
+export default function CarDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const unwrappedParams = use(params);
   const [car, setCar] = useState<Car | null>(null);
   const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
     // Try to find from sample data
-    const found = sampleCars.find((c, i) => String(i) === params.id || c.id === params.id);
+    const found = sampleCars.find((c, i) => String(i) === unwrappedParams.id || c.id === unwrappedParams.id);
     if (found) {
       setCar(found as Car);
     } else {
       // Default to first car for preview
       setCar(sampleCars[0] as Car);
     }
-  }, [params.id]);
+  }, [unwrappedParams.id]);
 
   if (!car) {
     return (
