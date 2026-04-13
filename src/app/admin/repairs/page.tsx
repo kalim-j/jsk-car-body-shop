@@ -62,60 +62,95 @@ export default function RepairShowcaseAdmin() {
     }
   };
 
-  const uploadImages = async (files: File[], folder: string) => {
+  const uploadToCloudinary = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "jsk_motors");
+    
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dafhtcbgo";
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.secure_url;
+  };
+
+  const uploadImages = async (files: File[]) => {
     const urls: string[] = [];
     for (const file of files) {
-      const storageRef = ref(storage, `repairs/${folder}/${Date.now()}_${file.name}`);
-      const uploadTask = await uploadBytesResumable(storageRef, file);
-      const url = await getDownloadURL(uploadTask.ref);
-      urls.push(url);
+      try {
+        const url = await uploadToCloudinary(file);
+        urls.push(url);
+      } catch (err) {
+        console.error("Cloudinary individual upload failed:", err);
+      }
     }
     return urls;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
+    
     try {
-      setUploading(true);
+      console.log("SUBMIT TRIGGERED - STARTING UPLOAD");
       
       let finalBeforeUrls = [...beforeImageUrls];
       let finalAfterUrls = [...afterImageUrls];
 
       if (beforeFiles.length > 0) {
-        const newBeforeUrls = await uploadImages(beforeFiles, "before");
+        console.log("Uploading Before Images...", beforeFiles.length);
+        const newBeforeUrls = await uploadImages(beforeFiles);
         finalBeforeUrls = [...finalBeforeUrls, ...newBeforeUrls];
       }
       
       if (afterFiles.length > 0) {
-        const newAfterUrls = await uploadImages(afterFiles, "after");
+        console.log("Uploading After Images...", afterFiles.length);
+        const newAfterUrls = await uploadImages(afterFiles);
         finalAfterUrls = [...finalAfterUrls, ...newAfterUrls];
       }
 
+      console.log("Cloudinary Uploads Complete ✅");
+      console.log("Before Images:", finalBeforeUrls);
+      console.log("After Images:", finalAfterUrls);
+
       const repairData = {
-        ...formData,
+        carName: formData.carName,
+        description: formData.description,
+        date: formData.date,
+        cost: formData.cost,
         beforeImages: finalBeforeUrls,
         afterImages: finalAfterUrls,
         updatedAt: new Date(),
       };
 
       if (editingId) {
+        console.log("Updating Firestore Document:", editingId);
         await updateDoc(doc(db, "repairs", editingId), repairData);
-        toast.success("Repair entry updated!");
+        toast.success("Showcase updated successfully ✅");
       } else {
+        console.log("Creating New Firestore Document");
         await addDoc(collection(db, "repairs"), {
           ...repairData,
           createdAt: new Date(),
         });
-        toast.success("Repair entry created!");
+        toast.success("New showcase added successfully ✅");
       }
 
       closeModal();
       fetchRepairs();
     } catch (error) {
-      console.error("Error saving repair:", error);
-      toast.error("Failed to save repair entry");
+      console.error("🔥 CRITICAL SUBMIT ERROR:", error);
+      toast.error("Process failed ❌ Check console for details");
     } finally {
-      setUploading(false);
+      setUploading(false); // ALWAYS UNSTUCK
+      console.log("SUBMISSION CYCLE COMPLETE");
     }
   };
 
