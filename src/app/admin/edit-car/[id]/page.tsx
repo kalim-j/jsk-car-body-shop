@@ -86,7 +86,7 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.brand || !formData.price) {
+    if (!formData.name || !formData.brand || !formData.price) {
       toast.error("Fill all required fields");
       return;
     }
@@ -95,7 +95,7 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
     try {
       const docRef = doc(db, "cars", unwrappedParams.id);
       await updateDoc(docRef, {
-        title: formData.title,
+        name: formData.name,
         brand: formData.brand,
         model: formData.model,
         year: Number(formData.year),
@@ -103,7 +103,7 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
         originalPrice: formData.originalPrice ? Number(formData.originalPrice) : null,
         condition: formData.condition,
         mileage: Number(formData.mileage),
-        fuelType: formData.fuelType,
+        fuel: formData.fuel,
         transmission: formData.transmission,
         city: formData.city,
         state: formData.state,
