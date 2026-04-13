@@ -20,7 +20,6 @@ import {
 import { formatPrice } from "@/lib/utils";
 import { CarGridSkeleton } from "@/components/ui/Skeleton";
 import { useDebouncedValue } from "@/hooks/useDebounce";
-import { sampleCars } from "@/lib/sampleData";
 import type { Car } from "@/lib/firestore";
 import { db } from "@/lib/firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";

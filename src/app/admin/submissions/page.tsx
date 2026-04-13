@@ -65,7 +65,7 @@ export default function AdminSubmissionsPage() {
         toast.loading("Severe damage detected: Moving to under_review", { duration: 3000 });
       }
 
-      const updateData: Record<string, any> = {
+      const updateData: Record<string, string | number | Date | null | undefined> = {
         status: finalStatus,
         updatedAt: new Date()
       };

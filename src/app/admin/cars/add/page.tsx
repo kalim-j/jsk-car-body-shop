@@ -18,7 +18,7 @@ export default function AddCarPage() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const [formData, setFormData] = useState({
-    title: "",
+    name: "",
     brand: "",
     model: "",
     year: new Date().getFullYear(),
@@ -26,7 +26,7 @@ export default function AddCarPage() {
     originalPrice: "",
     condition: "Good" as const,
     mileage: "",
-    fuelType: "Petrol" as const,
+    fuel: "Petrol" as const,
     transmission: "Manual" as const,
     city: "",
     state: "Tamil Nadu",
@@ -52,7 +52,7 @@ export default function AddCarPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.brand || !formData.price) {
+    if (!formData.name || !formData.brand || !formData.price) {
       toast.error("Fill all required fields");
       return;
     }
@@ -74,7 +74,7 @@ export default function AddCarPage() {
       }
 
       await addCar({
-        title: formData.title,
+        name: formData.name,
         brand: formData.brand,
         model: formData.model,
         year: formData.year,
@@ -82,7 +82,7 @@ export default function AddCarPage() {
         originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
         condition: formData.condition,
         mileage: Number(formData.mileage),
-        fuelType: formData.fuelType,
+        fuel: formData.fuel,
         transmission: formData.transmission,
         city: formData.city,
         state: formData.state,
@@ -134,8 +134,8 @@ export default function AddCarPage() {
                   Listing Title *
                 </label>
                 <input
-                  value={formData.title}
-                  onChange={(e) => update("title", e.target.value)}
+                  value={formData.name}
+                  onChange={(e) => update("name", e.target.value)}
                   placeholder="e.g., 2020 Hyundai Creta Fully Restored"
                   className="input-dark w-full px-4 py-3 rounded-xl text-sm"
                   required
@@ -224,8 +224,8 @@ export default function AddCarPage() {
               <div>
                 <label className="text-charcoal-300 text-xs font-medium block mb-2">Fuel Type</label>
                 <select
-                  value={formData.fuelType}
-                  onChange={(e) => update("fuelType", e.target.value)}
+                  value={formData.fuel}
+                  onChange={(e) => update("fuel", e.target.value)}
                   className="input-dark w-full px-4 py-3 rounded-xl text-sm"
                 >
                   {["Petrol", "Diesel", "Electric", "Hybrid", "CNG"].map((t) => (
