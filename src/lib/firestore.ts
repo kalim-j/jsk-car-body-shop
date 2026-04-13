@@ -345,6 +345,11 @@ export const subscribeToSubmissions = (
     orderBy("createdAt", "desc"),
     limit(50)
   );
+  return onSnapshot(q, (snapshot) => {
+    const submissions = snapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() } as CarSubmission)
+    );
+    callback(submissions);
   });
 };
 
