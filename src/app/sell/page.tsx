@@ -18,9 +18,8 @@ import { useAuth } from "@/context/AuthContext";
 import { INDIAN_STATES, CAR_BRANDS } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const isValidURL = (url: string) => {
   try {
@@ -86,8 +85,8 @@ export default function SellPage() {
       return;
     }
 
-    if (images.length === 0) {
-      toast.error("Please upload at least 1 photo");
+    if (images.length === 0 && imageLinks.filter(l => l.trim() !== "").length === 0) {
+      toast.error("Please add at least 1 image file or valid link");
       return;
     }
 
@@ -95,18 +94,34 @@ export default function SellPage() {
     try {
       console.log("Form submit triggered. Submitting started...");
 
+      const uploadToCloudinary = async (file: File) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        // Uses env variables, defaults to string replacement targets if missing
+        formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "jsk_motors");
+        
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dafhtcbgo";
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+        return data.secure_url;
+      };
+
       const uploadImages = async (imageFiles: File[]) => {
         const urls: string[] = [];
         for (const image of imageFiles) {
           try {
-            console.log("Uploading image:", image.name);
-            const imageRef = ref(storage, `cars/${Date.now()}-${image.name}`);
-            const snapshot = await uploadBytes(imageRef, image);
-            const url = await getDownloadURL(snapshot.ref);
+            const url = await uploadToCloudinary(image);
             urls.push(url);
-            console.log("Image uploaded successfully:", url);
           } catch (error) {
-            console.error("Image upload failed:", error);
+            console.error("Cloudinary upload failed:", error);
           }
         }
         return urls;
@@ -114,25 +129,24 @@ export default function SellPage() {
 
       let uploadedUrls: string[] = [];
 
-      // Upload images safely
+      // Upload images to Cloudinary
       if (images.length > 0) {
         uploadedUrls = await uploadImages(images);
       }
 
-      // Handle links
       const validLinks = imageLinks.filter(
         (link) => link.trim() !== "" && isValidURL(link)
       );
 
       const finalImages = [...uploadedUrls, ...validLinks];
 
-      console.log("Saving to Firestore...", { finalImages });
-
       if (finalImages.length === 0) {
-        toast.error("Please provide at least 1 image file or valid link");
+        toast.error("Please add at least 1 image");
         setSubmitting(false);
         return;
       }
+
+      console.log("Saving to Firestore...", { finalImages });
 
       await addDoc(collection(db, "car_submissions"), {
         userId: user.uid,
@@ -422,9 +436,63 @@ export default function SellPage() {
                 )}
               </div>
 
-              <label className="text-charcoal-300 text-xs text-center block mt-4">
-                * Please provide at least one valid image address to submit your car.
+              <label className="text-charcoal-300 text-sm font-medium block mb-3 mt-8">
+                Or Upload Files (Powered by Cloudinary Free)
               </label>
+              {/* Upload Zone */}
+              <label className="block w-full relative cursor-pointer mb-6">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/png, image/jpeg"
+                  onChange={handleImageSelect}
+                  className="sr-only"
+                />
+                <div className="border-2 border-dashed border-white/15 hover:border-gold-500/40 rounded-2xl p-8 text-center transition-colors duration-300">
+                  <Camera size={32} className="text-charcoal-500 mx-auto mb-3" />
+                  <p className="text-white font-medium mb-1">
+                    Click to upload photos
+                  </p>
+                  <p className="text-charcoal-500 text-sm">
+                    No Firebase Storage Required • Max 6 photos
+                  </p>
+                </div>
+              </label>
+
+              {/* Preview grid */}
+              {imagePreviews.length > 0 && (
+                <div className="grid grid-cols-3 gap-3">
+                  {imagePreviews.map((url, i) => (
+                    <div key={i} className="relative group rounded-xl overflow-hidden aspect-square">
+                      <Image
+                        src={url}
+                        alt={`Car photo ${i + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={12} className="text-white" />
+                      </button>
+                    </div>
+                  ))}
+                  {imagePreviews.length < 6 && (
+                    <label className="cursor-pointer aspect-square border border-dashed border-white/15 hover:border-gold-500/30 rounded-xl flex items-center justify-center transition-colors">
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/png, image/jpeg"
+                        onChange={handleImageSelect}
+                        className="sr-only"
+                      />
+                      <Upload size={24} className="text-charcoal-500" />
+                    </label>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Contact Info */}
