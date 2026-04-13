@@ -15,8 +15,6 @@ import {
   Info,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { addSubmission } from "@/lib/firestore";
-import { uploadSubmissionImages } from "@/lib/storage";
 import { INDIAN_STATES, CAR_BRANDS } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -95,7 +93,7 @@ export default function SellPage() {
 
     setSubmitting(true);
     try {
-      let uploadedUrls: string[] = [];
+      const uploadedUrls: string[] = [];
 
       // Upload images locally selected
       if (images.length > 0) {

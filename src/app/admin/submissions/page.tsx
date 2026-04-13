@@ -18,62 +18,7 @@ import type { CarSubmission } from "@/lib/firestore";
 import { db } from "@/lib/firebase";
 import { collection, updateDoc, doc, onSnapshot } from "firebase/firestore";
 
-// Mock submissions data
-const mockSubmissions: CarSubmission[] = [
-  {
-    id: "sub_1",
-    userId: "user1",
-    userEmail: "ravi@gmail.com",
-    userName: "Ravi Kumar",
-    carBrand: "Hyundai",
-    carModel: "i20",
-    carYear: 2018,
-    expectedPrice: 350000,
-    damageDescription: "Front end accident, airbags deployed, bonnet crushed. Car is otherwise in good condition.",
-    damageLevel: "Moderate",
-    city: "Chennai",
-    state: "Tamil Nadu",
-    phone: "9876543210",
-    images: ["https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400"],
-    status: "pending",
-  },
-  {
-    id: "sub_2",
-    userId: "user2",
-    userEmail: "priya@gmail.com",
-    userName: "Priya Sharma",
-    carBrand: "Maruti Suzuki",
-    carModel: "Alto",
-    carYear: 2016,
-    expectedPrice: 150000,
-    damageDescription: "Major side collision with lorry. Both doors damaged, glass broken.",
-    damageLevel: "Severe",
-    city: "Bangalore",
-    state: "Karnataka",
-    phone: "9123456789",
-    images: ["https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400"],
-    status: "pending",
-  },
-  {
-    id: "sub_3",
-    userId: "user3",
-    userEmail: "john@gmail.com",
-    userName: "John Mathew",
-    carBrand: "Toyota",
-    carModel: "Innova",
-    carYear: 2017,
-    expectedPrice: 600000,
-    damageDescription: "Rear end collision at highway. Boot and rear bumper damaged.",
-    damageLevel: "Minor",
-    city: "Coimbatore",
-    state: "Tamil Nadu",
-    phone: "8765432109",
-    images: ["https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400"],
-    status: "under_review",
-    adminNotes: "Car inspection scheduled for Thursday",
-    offeredPrice: 550000,
-  },
-];
+
 
 export default function AdminSubmissionsPage() {
   const [submissions, setSubmissions] = useState<CarSubmission[]>([]);
@@ -101,7 +46,7 @@ export default function AdminSubmissionsPage() {
 
   const handleStatusUpdate = async (id: string, status: CarSubmission["status"], note?: string, price?: number) => {
     try {
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         status: status,
         updatedAt: new Date()
       };
