@@ -22,16 +22,16 @@ import { db } from "./firebase";
 
 export interface Car {
   id?: string;
-  title: string;
+  name: string; // Changed from title
   brand: string;
   model: string;
   year: number;
   price: number;
   originalPrice?: number;
-  condition: "Excellent" | "Good" | "Fair" | "Restoration";
+  condition: string;
   mileage: number;
-  fuelType: "Petrol" | "Diesel" | "Electric" | "Hybrid" | "CNG";
-  transmission: "Manual" | "Automatic";
+  fuel: string; // Changed from fuelType
+  transmission: string;
   city: string;
   state: string;
   description: string;

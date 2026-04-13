@@ -38,7 +38,7 @@ export default function AdminCarsPage() {
   const filtered = cars.filter((c) => {
     const matchSearch =
       !search ||
-      c.title.toLowerCase().includes(search.toLowerCase()) ||
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.brand.toLowerCase().includes(search.toLowerCase());
     const matchFilter =
       filter === "all" ||
@@ -149,17 +149,17 @@ export default function AdminCarsPage() {
                         <div className="relative w-14 h-10 rounded-lg overflow-hidden flex-shrink-0">
                           <Image
                             src={car.images?.[0] || "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=100"}
-                            alt={car.title}
+                            alt={car.name}
                             fill
                             className="object-cover"
                           />
                         </div>
                         <div>
                           <div className="text-white text-sm font-medium line-clamp-1">
-                            {car.title}
+                            {car.name}
                           </div>
                           <div className="text-charcoal-500 text-xs">
-                            {car.year} • {car.fuelType}
+                            {car.year} • {car.fuel}
                           </div>
                         </div>
                       </div>

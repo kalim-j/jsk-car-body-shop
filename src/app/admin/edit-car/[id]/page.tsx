@@ -20,7 +20,7 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   
   const [formData, setFormData] = useState({
-    title: "",
+    name: "",
     brand: "",
     model: "",
     year: new Date().getFullYear(),
@@ -28,7 +28,7 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
     originalPrice: "",
     condition: "Good" as CarType["condition"],
     mileage: "",
-    fuelType: "Petrol" as CarType["fuelType"],
+    fuel: "Petrol" as CarType["fuel"],
     transmission: "Manual" as CarType["transmission"],
     city: "",
     state: "Tamil Nadu",
@@ -49,7 +49,7 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
         if (snap.exists()) {
           const data = snap.data();
           setFormData({
-            title: data.title || "",
+            name: data.name || "",
             brand: data.brand || "",
             model: data.model || "",
             year: data.year || new Date().getFullYear(),
@@ -57,7 +57,7 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
             originalPrice: String(data.originalPrice || ""),
             condition: data.condition || "Good",
             mileage: String(data.mileage || ""),
-            fuelType: data.fuelType || "Petrol",
+            fuel: data.fuel || "Petrol",
             transmission: data.transmission || "Manual",
             city: data.city || "",
             state: data.state || "Tamil Nadu",
@@ -170,8 +170,8 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
                     <div className="md:col-span-2">
                        <label className="text-charcoal-500 text-[10px] font-black uppercase tracking-[0.2em] block mb-3 pl-1">Listing Title *</label>
                        <input
-                         value={formData.title}
-                         onChange={(e) => update("title", e.target.value)}
+                         value={formData.name}
+                         onChange={(e) => update("name", e.target.value)}
                          className="input-dark w-full px-6 py-4 rounded-2xl text-sm border-white/5 focus:border-gold-500/50 transition-all font-medium"
                          required
                        />
@@ -315,8 +315,8 @@ export default function EditCarPage({ params }: { params: Promise<{ id: string }
                     <div>
                        <label className="text-charcoal-500 text-[8px] font-black uppercase tracking-[0.2em] block mb-2 pl-1">Fuel Protocol</label>
                        <select
-                          value={formData.fuelType}
-                          onChange={(e) => update("fuelType", e.target.value)}
+                          value={formData.fuel}
+                          onChange={(e) => update("fuel", e.target.value)}
                           className="input-dark w-full px-4 py-3 rounded-2xl text-sm font-medium border-white/5"
                         >
                          {["Petrol", "Diesel", "Electric", "Hybrid", "CNG"].map(t => <option key={t} value={t}>{t}</option>)}

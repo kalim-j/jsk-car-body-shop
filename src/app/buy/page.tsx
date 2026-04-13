@@ -64,12 +64,7 @@ function BuyPageContent() {
         ...doc.data()
       })) as Car[];
       
-      if (liveCars.length > 0) {
-        setCars(liveCars);
-      } else {
-        // Only use sample data if DB is completely empty
-        setCars(sampleCars as Car[]);
-      }
+      setCars(liveCars);
       setLoading(false);
     });
 
@@ -82,13 +77,13 @@ function BuyPageContent() {
     if (searchQuery) {
       result = result.filter(
         (c) =>
-          c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
           c.city.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    if (fuelFilter !== "All") result = result.filter((c) => c.fuelType === fuelFilter);
+    if (fuelFilter !== "All") result = result.filter((c) => c.fuel === fuelFilter);
     if (transmissionFilter !== "All") result = result.filter((c) => c.transmission === transmissionFilter);
     if (conditionFilter !== "All") result = result.filter((c) => c.condition === conditionFilter);
 
@@ -403,7 +398,7 @@ const BuyCarCard = memo(function BuyCarCard({ car, index }: { car: Car; index: n
         {!imgError ? (
           <Image
             src={car.images?.[0] || "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600"}
-            alt={car.title}
+            alt={car.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-700"
             onError={() => setImgError(true)}
@@ -441,7 +436,7 @@ const BuyCarCard = memo(function BuyCarCard({ car, index }: { car: Car; index: n
       <div className="p-5">
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="text-white font-bold text-base group-hover:text-gold-400 transition-colors leading-tight">
-            {car.title}
+            {car.name}
           </h3>
         </div>
         <div className="flex items-center gap-1 text-charcoal-400 text-xs mb-3">
@@ -452,7 +447,7 @@ const BuyCarCard = memo(function BuyCarCard({ car, index }: { car: Car; index: n
         <div className="flex flex-wrap gap-3 mb-4 text-xs text-charcoal-300">
           <span className="flex items-center gap-1">
             <Fuel size={11} className="text-gold-500" />
-            {car.fuelType}
+            {car.fuel}
           </span>
           <span className="flex items-center gap-1">
             <Gauge size={11} className="text-gold-500" />
@@ -484,7 +479,7 @@ const BuyCarCard = memo(function BuyCarCard({ car, index }: { car: Car; index: n
             View Details
           </Link>
           <a
-            href={`https://wa.me/917010587940?text=I'm interested in ${car.title}`}
+            href={`https://wa.me/917010587940?text=I'm interested in ${car.name}`}
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-2.5 bg-green-500/10 border border-green-500/30 text-green-400 rounded-xl text-sm hover:bg-green-500 hover:text-white transition-all duration-300"

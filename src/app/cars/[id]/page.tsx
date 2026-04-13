@@ -96,7 +96,7 @@ export default function PublicCarDetailPage({ params }: { params: Promise<{ id: 
             <div className="relative aspect-video sm:h-[500px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/5">
               <Image
                 src={images[currentImage]}
-                alt={car.title}
+                alt={car.name}
                 fill
                 className="object-cover"
                 priority
@@ -214,7 +214,7 @@ export default function PublicCarDetailPage({ params }: { params: Promise<{ id: 
                    </span>
                 </div>
                 <h1 className="font-display text-4xl font-black text-white mb-2 leading-tight group-hover:text-gold-400 transition-colors uppercase">
-                  {car.title}
+                  {car.name}
                 </h1>
                 <div className="flex items-center gap-2 text-charcoal-400 font-bold text-sm">
                   <MapPin size={16} className="text-gold-500" />
@@ -237,7 +237,7 @@ export default function PublicCarDetailPage({ params }: { params: Promise<{ id: 
 
               <div className="grid grid-cols-3 gap-4 mb-8">
                 {[
-                  { icon: Fuel, value: car.fuelType, label: "Fuel" },
+                  { icon: Fuel, value: car.fuel, label: "Fuel" },
                   { icon: Gauge, value: `${car.mileage?.toLocaleString("en-IN")} km`, label: "Mileage" },
                   { icon: Settings, value: car.transmission, label: "Shift" }
                 ].map((item, i) => (
@@ -257,7 +257,7 @@ export default function PublicCarDetailPage({ params }: { params: Promise<{ id: 
                   <Phone size={18} /> Call Specialist
                 </a>
                 <a
-                  href={`https://wa.me/917010587940?text=I'm interested in viewing the ${car.title} available in ${car.city}.`}
+                  href={`https://wa.me/917010587940?text=I'm interested in viewing the ${car.name} available in ${car.city}.`}
                   target="_blank"
                   className="w-full py-5 rounded-2xl bg-green-500/10 border border-green-500/30 text-green-400 font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-green-500 hover:text-white transition-all"
                 >

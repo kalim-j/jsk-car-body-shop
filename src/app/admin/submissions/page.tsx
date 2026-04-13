@@ -82,7 +82,7 @@ export default function AdminSubmissionsPage() {
         console.log("PREPARING TO ADD TO CARS COLLECTION...");
         
         await addDoc(collection(db, "cars"), {
-          title: `${sub.carYear || ""} ${sub.carBrand || ""} ${sub.carModel || ""}`.trim() || "Managed Listing",
+          name: `${sub.carYear || ""} ${sub.carBrand || ""} ${sub.carModel || ""}`.trim() || "Managed Listing",
           brand: sub.carBrand || "Unknown",
           model: sub.carModel || "Unknown",
           year: sub.carYear || new Date().getFullYear(),
@@ -91,7 +91,7 @@ export default function AdminSubmissionsPage() {
           images: sub.images || [],
           city: sub.city || "Unknown",
           state: sub.state || "",
-          fuelType: "Petrol",
+          fuel: "Petrol",
           transmission: "Manual",
           mileage: 0, 
           condition: sub.damageLevel === "Minor" ? "Good" : "Fair",
