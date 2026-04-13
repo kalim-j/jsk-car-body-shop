@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import type { Car as CarType } from "@/lib/firestore";
 import { CAR_BRANDS, formatPrice } from "@/lib/utils";
 import toast from "react-hot-toast";
 

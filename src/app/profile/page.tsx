@@ -30,7 +30,7 @@ interface UserData {
   phone: string;
   dob: string;
   photoURL: string;
-  createdAt: Timestamp | Date | any; // Keep any as last resort or use explicit union
+  createdAt: Timestamp | Date | null; 
 }
 
 interface SubmittedCar {
@@ -40,7 +40,7 @@ interface SubmittedCar {
   carYear: number;
   expectedPrice: number;
   status: "pending" | "approved" | "rejected" | "under_review";
-  createdAt: Timestamp | Date | any;
+  createdAt: Timestamp | Date | null;
   images: string[];
 }
 
