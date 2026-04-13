@@ -16,6 +16,8 @@ import { sampleCars } from "@/lib/sampleData";
 import { formatPrice } from "@/lib/utils";
 import type { Car as CarType } from "@/lib/firestore";
 import toast from "react-hot-toast";
+import { db } from "@/lib/firebase";
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 
 export default function AdminCarsPage() {
   const [cars, setCars] = useState<CarType[]>([]);
@@ -23,7 +25,15 @@ export default function AdminCarsPage() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    setCars(sampleCars as CarType[]);
+    const q = query(collection(db, "cars"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const liveCars = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as CarType[];
+      setCars(liveCars);
+    });
+    return () => unsubscribe();
   }, []);
 
   const filtered = cars.filter((c) => {
@@ -39,10 +49,16 @@ export default function AdminCarsPage() {
     return matchSearch && matchFilter;
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    if (!id) return;
     if (confirm("Are you sure you want to delete this car?")) {
-      setCars((prev) => prev.filter((c) => c.id !== id));
-      toast.success("Car deleted successfully");
+      try {
+        await deleteDoc(doc(db, "cars", id));
+        toast.success("Car deleted successfully ✅");
+      } catch (error) {
+        console.error("Delete error:", error);
+        toast.error("Failed to delete car");
+      }
     }
   };
 
@@ -177,17 +193,17 @@ export default function AdminCarsPage() {
                     <td className="py-4 px-5">
                       <div className="flex items-center justify-end gap-2">
                         <Link
-                          href={`/buy/${car.id || "preview"}`}
+                          href={`/cars/${car.id}`}
                           className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors text-charcoal-300 hover:text-white"
-                          title="View"
+                          title="View Detail"
                           target="_blank"
                         >
                           <Eye size={14} />
                         </Link>
                         <Link
-                          href={`/admin/cars/edit/${car.id || "1"}`}
+                          href={`/admin/edit-car/${car.id}`}
                           className="w-8 h-8 rounded-lg bg-gold-500/10 flex items-center justify-center hover:bg-gold-500/20 transition-colors text-gold-400"
-                          title="Edit"
+                          title="Edit Car"
                         >
                           <Edit size={14} />
                         </Link>

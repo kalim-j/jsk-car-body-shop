@@ -267,7 +267,7 @@ export const deleteDealer = async (id: string): Promise<void> => {
 
 export const getSubmissions = async (): Promise<CarSubmission[]> => {
   const q = query(
-    collection(db, "submissions"),
+    collection(db, "car_submissions"),
     orderBy("createdAt", "desc")
   );
   const snapshot = await getDocs(q);
@@ -280,7 +280,7 @@ export const getUserSubmissions = async (
   userId: string
 ): Promise<CarSubmission[]> => {
   const q = query(
-    collection(db, "submissions"),
+    collection(db, "car_submissions"),
     where("userId", "==", userId),
     orderBy("createdAt", "desc")
   );
@@ -293,7 +293,7 @@ export const getUserSubmissions = async (
 export const addSubmission = async (
   submission: Omit<CarSubmission, "id">
 ): Promise<string> => {
-  const docRef = await addDoc(collection(db, "submissions"), {
+  const docRef = await addDoc(collection(db, "car_submissions"), {
     ...submission,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -305,7 +305,7 @@ export const updateSubmission = async (
   id: string,
   data: Partial<CarSubmission>
 ): Promise<void> => {
-  await updateDoc(doc(db, "submissions", id), {
+  await updateDoc(doc(db, "car_submissions", id), {
     ...data,
     updatedAt: serverTimestamp(),
   });
@@ -317,7 +317,7 @@ export const subscribeToSubmissions = (
   callback: (submissions: CarSubmission[]) => void
 ): Unsubscribe => {
   const q = query(
-    collection(db, "submissions"),
+    collection(db, "car_submissions"),
     orderBy("createdAt", "desc"),
     limit(50)
   );

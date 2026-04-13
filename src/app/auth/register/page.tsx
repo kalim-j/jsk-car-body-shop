@@ -13,6 +13,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [dob, setDob] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -35,7 +37,7 @@ export default function RegisterPage() {
     }
     setLoading(true);
     try {
-      await signUpWithEmail(name, email, password);
+      await signUpWithEmail(name, email, password, phone, dob);
       toast.success("Account created successfully! Welcome to JSK Motors.");
       router.push("/");
     } catch (err: unknown) {
@@ -146,6 +148,38 @@ export default function RegisterPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   className="input-dark w-full pl-11 pr-4 py-3 rounded-xl text-sm"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-charcoal-300 text-sm font-medium block mb-2">
+                Phone Number
+              </label>
+              <div className="relative">
+                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal-400" />
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="10-digit mobile"
+                  className="input-dark w-full pl-11 pr-4 py-3 rounded-xl text-sm"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-charcoal-300 text-sm font-medium block mb-2">
+                Date of Birth
+              </label>
+              <div className="relative">
+                <input
+                  type="date"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                  className="input-dark w-full px-4 py-3 rounded-xl text-sm [color-scheme:dark]"
                   required
                 />
               </div>

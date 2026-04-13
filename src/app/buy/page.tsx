@@ -22,6 +22,8 @@ import { CarGridSkeleton } from "@/components/ui/Skeleton";
 import { useDebouncedValue } from "@/hooks/useDebounce";
 import { sampleCars } from "@/lib/sampleData";
 import type { Car } from "@/lib/firestore";
+import { db } from "@/lib/firebase";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
 const PAGE_SIZE = 12;
 
@@ -55,11 +57,23 @@ function BuyPageContent() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCars(sampleCars as Car[]);
+    const q = query(collection(db, "cars"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const liveCars = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Car[];
+      
+      if (liveCars.length > 0) {
+        setCars(liveCars);
+      } else {
+        // Only use sample data if DB is completely empty
+        setCars(sampleCars as Car[]);
+      }
       setLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {

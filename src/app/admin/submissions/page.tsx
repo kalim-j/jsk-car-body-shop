@@ -16,7 +16,7 @@ import { formatPrice } from "@/lib/utils";
 import toast from "react-hot-toast";
 import type { CarSubmission } from "@/lib/firestore";
 import { db } from "@/lib/firebase";
-import { collection, updateDoc, doc, onSnapshot } from "firebase/firestore";
+import { collection, updateDoc, doc, onSnapshot, addDoc } from "firebase/firestore";
 
 
 
@@ -46,15 +46,56 @@ export default function AdminSubmissionsPage() {
 
   const handleStatusUpdate = async (id: string, status: CarSubmission["status"], note?: string, price?: number) => {
     try {
+      // Find the specific submission data
+      const sub = submissions.find(s => s.id === id);
+      if (!sub) return;
+
+      let finalStatus = status;
+      
+      // Damage-based workflow logic
+      if (status === "approved" && sub.damageLevel === "Severe") {
+        finalStatus = "under_review";
+        toast.loading("Severe damage detected: Moving to under_review for extra checks", { duration: 3000 });
+      }
+
       const updateData: Record<string, unknown> = {
-        status: status,
+        status: finalStatus,
         updatedAt: new Date()
       };
       if (note) updateData.adminNotes = note;
       if (price) updateData.offeredPrice = price;
 
       await updateDoc(doc(db, "car_submissions", id), updateData);
-      toast.success(`Submission status updated to ${status}`);
+
+      // Inventory workflow: Move to Buy Cars if approved and damage is manageable
+      if (finalStatus === "approved" && (sub.damageLevel === "Minor" || sub.damageLevel === "Moderate")) {
+        await addDoc(collection(db, "cars"), {
+          title: `${sub.carYear} ${sub.carBrand} ${sub.carModel}`,
+          brand: sub.carBrand,
+          model: sub.carModel,
+          year: sub.carYear,
+          price: price || sub.expectedPrice,
+          originalPrice: sub.expectedPrice,
+          images: sub.images,
+          city: sub.city,
+          state: sub.state,
+          fuelType: "Petrol", // Default for submissions
+          transmission: "Manual", // Default for submissions
+          mileage: 0, 
+          condition: sub.damageLevel === "Minor" ? "Good" : "Fair",
+          status: "available",
+          featured: false,
+          description: sub.damageDescription,
+          source: "user_submission",
+          submissionId: id,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+        toast.success("Car approved and moved to active Inventory! ✅");
+      } else {
+        toast.success(`Submission status updated to ${finalStatus}`);
+      }
+
       setSelected(null);
     } catch (error) {
       console.error("Error updating status:", error);
