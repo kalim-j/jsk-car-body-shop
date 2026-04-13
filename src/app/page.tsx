@@ -5,10 +5,8 @@ import dynamic from "next/dynamic";
 const HeroSection = dynamic(() => import("@/components/home/HeroSection"), { ssr: true });
 const ServicesSection = dynamic(() => import("@/components/home/ServicesSection"), { ssr: true });
 const BeforeAfterSection = dynamic(() => import("@/components/home/BeforeAfterSection"), { ssr: true });
-const FeaturedCars = dynamic(() => import("@/components/home/FeaturedCars"), { 
-  ssr: true,
-  loading: () => <div className="h-96 w-full flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-gold-500 border-t-transparent animate-spin"/></div>
-});
+const FeaturedCars = dynamic(() => import("@/components/home/FeaturedCars"), { ssr: true });
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Phone, MessageCircle, ChevronRight } from "lucide-react";

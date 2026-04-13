@@ -8,10 +8,9 @@ import Image from "next/image";
 import { Fuel, Gauge, Settings, MapPin, ArrowRight, Star } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { CarGridSkeleton } from "@/components/ui/Skeleton";
-import { sampleCars } from "@/lib/sampleData";
 import type { Car } from "@/lib/firestore";
 import { db } from "@/lib/firebase";
-import { collection, query, where, limit, onSnapshot } from "firebase/firestore";
+import { collection, query, where, limit, onSnapshot, orderBy } from "firebase/firestore";
 
 export default function FeaturedCars() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -19,10 +18,11 @@ export default function FeaturedCars() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 });
 
   useEffect(() => {
-    // Live Firestore sync for featured cars
+    // Fetch available cars from inventory (same source as Buy Cars page)
     const q = query(
       collection(db, "cars"),
-      where("featured", "==", true),
+      where("status", "==", "available"),
+      orderBy("createdAt", "desc"),
       limit(6)
     );
 
@@ -32,25 +32,15 @@ export default function FeaturedCars() {
         ...doc.data()
       })) as Car[];
 
-      if (data.length > 0) {
-        setCars(data);
-      } else {
-        // Fallback to mapped sample data if DB is empty to avoid blank section during first launch
-        const formatted = sampleCars
-          .filter(e => e.featured)
-          .slice(0, 6)
-          .map(e => ({
-            ...e,
-            name: (e as any).title,
-            fuel: (e as any).fuelType
-          } as unknown as Car));
-        setCars(formatted);
-      }
+      setCars(data);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
+
+  // Hide entire section if no cars in inventory
+  if (!loading && cars.length === 0) return null;
 
   return (
     <section className="section-padding bg-charcoal-950 relative overflow-hidden">
@@ -136,6 +126,13 @@ export default function FeaturedCars() {
 function CarCard({ car }: { car: Car }) {
   const [imgError, setImgError] = useState(false);
 
+  // Safe image display logic: handles both array and single string formats
+  const imageUrl = Array.isArray(car.images) && car.images.length > 0 
+    ? car.images[0] 
+    : typeof car.images === "string" && car.images 
+      ? car.images 
+      : "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600";
+
   return (
     <motion.div
       variants={{
@@ -150,7 +147,7 @@ function CarCard({ car }: { car: Car }) {
       <div className="relative h-52 overflow-hidden">
         {!imgError ? (
           <Image
-            src={car.images?.[0] || "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600"}
+            src={imageUrl}
             alt={car.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -195,7 +192,7 @@ function CarCard({ car }: { car: Car }) {
       {/* Content */}
       <div className="p-5">
         <h3 className="text-white font-bold text-base mb-1 group-hover:text-gold-400 transition-colors truncate">
-          {car.name}
+          {car.name || (car as any).title}
         </h3>
         <div className="flex items-center gap-1 text-charcoal-400 text-xs mb-4">
           <MapPin size={10} />
