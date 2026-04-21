@@ -52,7 +52,15 @@ service cloud.firestore {
     // ── Products Collection ─────────────────────────────────────────────
     match /products/{productId} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ── Product Submissions ─────────────────────────────────────────────
+    match /product_submissions/{docId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.submittedBy == request.auth.uid);
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+      allow delete: if false;
     }
 
     // ── Orders Collection ───────────────────────────────────────────────

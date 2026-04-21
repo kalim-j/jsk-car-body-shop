@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, LogOut, User, Settings, TrendingUp } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User, Settings, TrendingUp, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 import toast from "react-hot-toast";
 
 // Using a new variable name to forcefully break the stale Next.js SSR cache memory reference
@@ -25,6 +26,7 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const pathname = usePathname();
   const { user, isAdmin, logout, loading } = useAuth();
+  const { cartItems } = useCart();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -100,7 +102,22 @@ export default function Navbar() {
           </nav>
 
           {/* Auth Buttons */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-3">
+            {/* Cart Icon */}
+            {mounted && (
+              <Link
+                href="/cart"
+                className="relative p-2 text-charcoal-400 hover:text-gold-500 transition-colors"
+                aria-label="Cart"
+              >
+                <ShoppingCart size={20} />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-gold-500 text-black text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full leading-none">
+                    {cartItems.reduce((a, i) => a + i.quantity, 0)}
+                  </span>
+                )}
+              </Link>
+            )}
             {!mounted || loading ? (
               <div className="w-24 h-9 skeleton rounded-full" />
             ) : user ? (
