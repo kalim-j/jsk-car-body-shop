@@ -19,7 +19,8 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { sampleCars, sampleDealers } from "@/lib/sampleData";
 import { db } from "@/lib/firebase";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where, doc, setDoc, getDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 const adminNavLinks = [
   { href: "/admin", label: "Dashboard", icon: TrendingUp },
@@ -136,7 +137,7 @@ export default function AdminDashboard() {
               Welcome, {user?.displayName || user?.email?.split("@")[0]}
             </h1>
             <p className="text-charcoal-400 text-sm mt-1">
-              Manage JSK Motors inventory, submissions, and dealer network
+              Manage JSK CAR BODY SHOP inventory, submissions, and dealer network
             </p>
           </div>
           <Link
@@ -287,7 +288,112 @@ export default function AdminDashboard() {
             </Link>
           </motion.div>
         )}
+
+        {/* Site Settings Form */}
+        <SiteSettingsSection />
       </div>
+    </div>
+  );
+}
+
+function SiteSettingsSection() {
+  const [stats, setStats] = useState({
+    carsRestored: "500+",
+    yearsExperience: "14+",
+    customerRating: "4.9",
+    satisfaction: "100%"
+  });
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const docRef = doc(db, "site_settings", "stats");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setStats({
+            carsRestored: data.carsRestored || "500+",
+            yearsExperience: data.yearsExperience || "14+",
+            customerRating: data.customerRating || "4.9",
+            satisfaction: data.satisfaction || "100%"
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await setDoc(doc(db, "site_settings", "stats"), stats);
+      toast.success("Stats updated successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update stats.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="mt-10 glass-dark rounded-2xl p-6 border border-white/5">
+      <h2 className="text-white font-bold text-lg mb-5">Site Settings</h2>
+      <form onSubmit={handleSave} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+          <label className="block text-charcoal-400 text-xs mb-1">Cars Restored</label>
+          <input
+            type="text"
+            required
+            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-gold-500"
+            value={stats.carsRestored}
+            onChange={(e) => setStats({...stats, carsRestored: e.target.value})}
+          />
+        </div>
+        <div>
+          <label className="block text-charcoal-400 text-xs mb-1">Years Experience</label>
+          <input
+            type="text"
+            required
+            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-gold-500"
+            value={stats.yearsExperience}
+            onChange={(e) => setStats({...stats, yearsExperience: e.target.value})}
+          />
+        </div>
+        <div>
+          <label className="block text-charcoal-400 text-xs mb-1">Customer Rating</label>
+          <input
+            type="text"
+            required
+            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-gold-500"
+            value={stats.customerRating}
+            onChange={(e) => setStats({...stats, customerRating: e.target.value})}
+          />
+        </div>
+        <div>
+          <label className="block text-charcoal-400 text-xs mb-1">Satisfaction</label>
+          <input
+            type="text"
+            required
+            className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-gold-500"
+            value={stats.satisfaction}
+            onChange={(e) => setStats({...stats, satisfaction: e.target.value})}
+          />
+        </div>
+        <div className="sm:col-span-2 lg:col-span-4 flex justify-end mt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-gold px-6 py-2.5 rounded-xl font-bold disabled:opacity-50"
+          >
+            {loading ? "Saving..." : "Save Settings"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

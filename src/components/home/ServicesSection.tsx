@@ -131,7 +131,7 @@ export default function ServicesSection() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold-500/30 text-gold-400 text-sm font-medium mb-6">
-                About JSK Motors
+                About JSK CAR BODY SHOP
               </div>
               <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-6">
                 14+ Years of Restoring{" "}

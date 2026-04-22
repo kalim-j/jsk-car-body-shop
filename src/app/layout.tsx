@@ -21,15 +21,15 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "JSK Motors | Premium Car Restoration & Resale in Tamil Nadu",
+  title: "JSK CAR BODY SHOP | Premium Car Restoration & Resale in Tamil Nadu",
   description:
-    "JSK CAR BODY SHOP - India's premier accident car restoration and resale service in Krishnagiri, Tamil Nadu. Expert car painting, repairs, and full restoration. Buy restored cars at unbeatable prices.",
+    "JSK CAR BODY SHOP - Expert accident car restoration, premium repainting & resale in Krishnagiri, Tamil Nadu.",
   keywords:
-    "car restoration, accident car repair, car resale, JSK motors, Krishnagiri, Tamil Nadu, car painting, body shop India",
+    "car restoration, accident car repair, car resale, JSK CAR BODY SHOP, Krishnagiri, Tamil Nadu, car painting, body shop India",
   openGraph: {
-    title: "JSK Motors | Premium Car Restoration & Resale",
+    title: "JSK CAR BODY SHOP | Premium Car Restoration & Resale",
     description:
-      "Expert car restoration and resale. Buy premium restored cars at unbeatable prices.",
+      "JSK CAR BODY SHOP - Expert accident car restoration, premium repainting & resale in Krishnagiri, Tamil Nadu.",
     type: "website",
     locale: "en_IN",
   },

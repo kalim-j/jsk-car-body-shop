@@ -1,4 +1,4 @@
-# JSK Motors — Premium Car Restoration Website
+# JSK CAR BODY SHOP — Premium Car Restoration Website
 ## Complete Setup & Deployment Guide
 
 A full-stack Next.js 15 + Firebase website for JSK CAR BODY SHOP, Krishnagiri, Tamil Nadu.
@@ -182,7 +182,7 @@ Only these emails have admin privileges:
 # Initialize git
 git init
 git add .
-git commit -m "feat: initial JSK Motors platform release"
+git commit -m "feat: initial JSK CAR BODY SHOP platform release"
 
 # Create GitHub repo (via GitHub CLI)
 gh repo create jsk-motors --public --source=. --push

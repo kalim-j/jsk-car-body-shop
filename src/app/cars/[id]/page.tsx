@@ -198,7 +198,7 @@ export default function PublicCarDetailPage({ params }: { params: Promise<{ id: 
                <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/2 blur-[100px] -mr-32 -mt-32" />
                <h2 className="text-white text-2xl font-bold mb-6 font-display uppercase tracking-widest text-gold-500/50">Car Description</h2>
                <p className="text-charcoal-300 text-lg leading-relaxed font-medium">
-                 {car.description || "This vehicle has been professionally restored and maintained by JSK Motors. All documentation is clear and the car is ready for immediate transfer. Road tested extensively for over 500km."}
+                 {car.description || "This vehicle has been professionally restored and maintained by JSK CAR BODY SHOP. All documentation is clear and the car is ready for immediate transfer. Road tested extensively for over 500km."}
                </p>
             </div>
           </div>

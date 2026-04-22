@@ -4,6 +4,8 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { Star, Shield, Zap, ArrowRight, Phone } from "lucide-react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 // ── Deterministic seeded particle data ───────────────────────────────────────
 // Using Math.sin as a seeded PRNG so server and client produce identical values.
@@ -37,14 +39,35 @@ export default function HeroSection() {
 
   // Particles are client-only — avoids SSR / client hydration mismatch
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
-
-  const stats = [
+  const [stats, setStats] = useState([
     { value: "500+", label: "Cars Restored" },
     { value: "14+",  label: "Years Experience" },
     { value: "4.9★", label: "Customer Rating" },
     { value: "100%", label: "Satisfaction" },
-  ];
+  ]);
+
+  useEffect(() => { 
+    setMounted(true);
+    
+    const fetchStats = async () => {
+      try {
+        const docRef = doc(db, "site_settings", "stats");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setStats([
+            { value: data.carsRestored || "500+", label: "Cars Restored" },
+            { value: data.yearsExperience || "14+", label: "Years Experience" },
+            { value: data.customerRating || "4.9", label: "Customer Rating" },
+            { value: data.satisfaction || "100%", label: "Satisfaction" },
+          ]);
+        }
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <section
@@ -92,7 +115,7 @@ export default function HeroSection() {
         >
           <Star size={14} className="text-gold-500 fill-gold-500" />
           <span className="text-gold-400 text-sm font-medium tracking-wide">
-            Tamil Nadu&apos;s #1 Car Restoration Service
+            Dharmapuri&apos;s #1 Car Restoration Service
           </span>
           <Star size={14} className="text-gold-500 fill-gold-500" />
         </motion.div>

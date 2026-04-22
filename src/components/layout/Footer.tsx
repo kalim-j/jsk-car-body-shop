@@ -79,7 +79,7 @@ export default function Footer() {
                 <span className="text-black font-display font-black text-xl">JSK</span>
               </div>
               <div>
-                <div className="text-white font-display font-bold text-lg">JSK Motors</div>
+                <div className="text-white font-display font-bold text-lg">JSK CAR BODY SHOP</div>
                 <div className="text-gold-500 text-xs tracking-widest uppercase">
                   Est. Since 2010
                 </div>
@@ -179,7 +179,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="py-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-charcoal-500 text-xs">
-            © {new Date().getFullYear()} JSK Motors. All rights reserved. Made in India 🇮🇳
+            © {new Date().getFullYear()} JSK CAR BODY SHOP. All rights reserved. Made in India 🇮🇳
           </p>
           <div className="flex gap-6">
             <Link href="/privacy" className="text-charcoal-500 text-xs hover:text-gold-500 transition-colors">

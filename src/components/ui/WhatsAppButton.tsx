@@ -5,7 +5,7 @@ import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917010587940";
-const WHATSAPP_MESSAGE = "Hello JSK Motors! I'm interested in your car restoration services. Can you help me?";
+const WHATSAPP_MESSAGE = "Hello JSK CAR BODY SHOP! I'm interested in your car restoration services. Can you help me?";
 
 export default function WhatsAppButton() {
   const [showTooltip, setShowTooltip] = useState(false);

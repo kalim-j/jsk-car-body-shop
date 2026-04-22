@@ -61,7 +61,7 @@ export default function ContactPage() {
               Get In Touch
             </div>
             <h1 className="font-display text-4xl sm:text-5xl font-bold text-white mb-4">
-              Contact <span className="gold-text">JSK Motors</span>
+              Contact <span className="gold-text">JSK CAR BODY SHOP</span>
             </h1>
             <p className="text-charcoal-400 max-w-xl mx-auto">
               Visit us or call for a free estimate. We&apos;re here Monday to Saturday,
@@ -93,7 +93,7 @@ export default function ContactPage() {
               </motion.a>
 
               <motion.a
-                href="https://wa.me/917010587940?text=Hello JSK Motors!"
+                href="https://wa.me/917010587940?text=Hello JSK CAR BODY SHOP!"
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
@@ -198,7 +198,7 @@ export default function ContactPage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="JSK Motors Location"
+                title="JSK CAR BODY SHOP Location"
               />
             </div>
           </div>

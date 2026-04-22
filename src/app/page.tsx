@@ -90,7 +90,7 @@ export default function HomePage() {
             </div>
             <h2 className="font-display text-4xl sm:text-6xl font-bold text-white mb-6">
               Contact{" "}
-              <span className="gold-text">JSK Motors</span>{" "}
+              <span className="gold-text">JSK CAR BODY SHOP</span>{" "}
               Today
             </h2>
             <p className="text-charcoal-400 text-lg max-w-xl mx-auto mb-10">

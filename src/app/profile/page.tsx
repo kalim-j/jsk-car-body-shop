@@ -295,7 +295,7 @@ export default function ProfilePage() {
                   <Car size={48} className="text-gold-500/20" />
                 </div>
                 <h3 className="text-white text-2xl font-bold mb-3 font-display">No Submissions Yet</h3>
-                <p className="text-charcoal-400 mb-10 max-w-sm mx-auto leading-relaxed">Turn your unused, damaged, or second-hand cars into instant cash today through JSK Motors.</p>
+                <p className="text-charcoal-400 mb-10 max-w-sm mx-auto leading-relaxed">Turn your unused, damaged, or second-hand cars into instant cash today through JSK CAR BODY SHOP.</p>
                 <Link href="/sell" className="btn-gold px-12 py-5 rounded-full font-black text-sm uppercase tracking-widest shadow-gold hover:shadow-gold/40 hover:-translate-y-1 transition-all">
                   Sell Your Car Now
                 </Link>

@@ -48,7 +48,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await signUpWithEmail(name, email, password, phone, dob);
-      toast.success("Account created successfully! Welcome to JSK Motors.");
+      toast.success("Account created successfully! Welcome to JSK CAR BODY SHOP.");
       router.push("/");
     } catch (err: unknown) {
       const error = err as { code?: string };
@@ -66,7 +66,7 @@ export default function RegisterPage() {
     setGoogleLoading(true);
     try {
       await signInWithGoogle();
-      toast.success("Welcome to JSK Motors!");
+      toast.success("Welcome to JSK CAR BODY SHOP!");
       router.push("/");
     } catch {
       toast.error("Google sign-in failed");
@@ -102,7 +102,7 @@ export default function RegisterPage() {
               Create Account
             </h1>
             <p className="text-charcoal-400 text-sm mt-1">
-              Join JSK Motors family today
+              Join JSK CAR BODY SHOP family today
             </p>
           </div>
 

@@ -70,7 +70,7 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:block">
               <div className="text-white font-display font-bold text-lg leading-tight">
-                JSK Motors
+                JSK CAR BODY SHOP
               </div>
               <div className="text-gold-500 text-xs tracking-widest uppercase font-medium">
                 Car Restoration & Resale

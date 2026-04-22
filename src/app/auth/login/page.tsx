@@ -97,7 +97,7 @@ export default function LoginPage() {
               Welcome Back
             </h1>
             <p className="text-charcoal-400 text-sm mt-1">
-              Sign in to your JSK Motors account
+              Sign in to your JSK CAR BODY SHOP account
             </p>
           </div>
 
