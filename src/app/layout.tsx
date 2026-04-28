@@ -21,6 +21,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://jsk-car-body-shop.vercel.app"),
   title: "JSK CAR BODY SHOP | Premium Car Restoration & Resale in Tamil Nadu",
   description:
     "JSK CAR BODY SHOP - Expert accident car restoration, premium repainting & resale in Krishnagiri, Tamil Nadu.",
@@ -30,8 +31,12 @@ export const metadata: Metadata = {
     title: "JSK CAR BODY SHOP | Premium Car Restoration & Resale",
     description:
       "JSK CAR BODY SHOP - Expert accident car restoration, premium repainting & resale in Krishnagiri, Tamil Nadu.",
+    url: "https://jsk-car-body-shop.vercel.app",
     type: "website",
     locale: "en_IN",
+  },
+  alternates: {
+    canonical: "https://jsk-car-body-shop.vercel.app",
   },
   verification: {
     google: "3FzK2uEANXU1UxcCAAfgeX8axs3N4oSq-2slO34BnCU",
@@ -43,8 +48,31 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AutoBodyShop",
+    name: "JSK CAR BODY SHOP",
+    image: "https://jsk-car-body-shop.vercel.app/logo.png",
+    "@id": "https://jsk-car-body-shop.vercel.app",
+    url: "https://jsk-car-body-shop.vercel.app",
+    telephone: "+919876543210",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Dharmapuri Main Road",
+      addressLocality: "Krishnagiri",
+      addressRegion: "Tamil Nadu",
+      addressCountry: "IN"
+    }
+  };
+
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="bg-black text-white antialiased font-sans">
         <AuthProvider>
           <CartProvider>
