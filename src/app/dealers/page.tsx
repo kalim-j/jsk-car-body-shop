@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Search, MapPin, Star, Wrench, Phone, ChevronRight, CarFront, Filter, X } from "lucide-react";
+import { Search, MapPin, Star, Wrench, Phone, ChevronRight, CarFront, Filter, X, Globe } from "lucide-react";
 import { Dealer, subscribeToDealers } from "@/lib/firestore";
 import { useDebouncedValue } from "@/hooks/useDebounce";
 
@@ -64,6 +64,32 @@ export default function PublicDealersPage() {
   const clearFilters = () => {
     setRawSearch("");
     setSelectedType("All");
+  };
+
+  // OSM Search States
+  const [osmState, setOsmState] = useState("Tamil Nadu");
+  const [osmCity, setOsmCity] = useState("");
+  const [osmDealers, setOsmDealers] = useState<any[]>([]);
+  const [osmLoading, setOsmLoading] = useState(false);
+  const [osmSearched, setOsmSearched] = useState(false);
+
+  const searchOsmDealers = async () => {
+    setOsmLoading(true);
+    setOsmSearched(true);
+    try {
+      const params = new URLSearchParams();
+      if (osmState) params.append("state", osmState);
+      if (osmCity) params.append("city", osmCity);
+      
+      const res = await fetch(`/api/nearby-dealers?${params.toString()}`);
+      const data = await res.json();
+      setOsmDealers(data.dealers || []);
+    } catch (err) {
+      console.error(err);
+      setOsmDealers([]);
+    } finally {
+      setOsmLoading(false);
+    }
   };
 
   return (
@@ -171,6 +197,118 @@ export default function PublicDealersPage() {
             </AnimatePresence>
           </motion.div>
         )}
+
+        {/* --- OSM Dealer Search Section --- */}
+        <div className="mt-20 pt-16 border-t border-white/5">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Explore <span className="text-gold-400">All Nearby Locations</span>
+            </h2>
+            <p className="text-charcoal-400 max-w-xl mx-auto">
+              Can&apos;t find an authorized partner? Search our broader database powered by OpenStreetMap to find local car dealers, repair shops, and parts suppliers in your area.
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto bg-charcoal-900/50 border border-white/10 rounded-2xl p-6 backdrop-blur-sm mb-10">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <label className="block text-xs font-medium text-charcoal-400 mb-1.5 uppercase tracking-wider">State / Region</label>
+                <input
+                  type="text"
+                  value={osmState}
+                  onChange={(e) => setOsmState(e.target.value)}
+                  placeholder="e.g., Tamil Nadu"
+                  className="input-dark w-full px-4 py-2.5 rounded-xl text-sm"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-medium text-charcoal-400 mb-1.5 uppercase tracking-wider">City (Optional)</label>
+                <input
+                  type="text"
+                  value={osmCity}
+                  onChange={(e) => setOsmCity(e.target.value)}
+                  placeholder="e.g., Chennai"
+                  className="input-dark w-full px-4 py-2.5 rounded-xl text-sm"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={searchOsmDealers}
+                  disabled={osmLoading || !osmState}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl btn-gold text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 h-[42px]"
+                >
+                  {osmLoading ? (
+                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Search size={16} /> Search Local
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {osmSearched && (
+            <div className="mb-10">
+              <h3 className="text-xl font-semibold text-white mb-6">
+                Found {osmDealers.length} locations {osmCity ? `in ${osmCity}` : `in ${osmState}`}
+              </h3>
+              
+              {osmLoading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-48 rounded-2xl border border-white/5 bg-charcoal-900/50 skeleton" />
+                  ))}
+                </div>
+              ) : osmDealers.length === 0 ? (
+                <div className="text-center py-10 glass-dark rounded-2xl border border-white/5">
+                  <MapPin size={32} className="text-charcoal-600 mx-auto mb-3" />
+                  <p className="text-charcoal-400">No locations found. Try expanding your search area.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {osmDealers.map((dealer) => (
+                    <div key={dealer.id} className="glass-dark rounded-2xl p-6 border border-white/5 flex flex-col h-full hover:border-gold-500/30 transition-colors">
+                      <div className="mb-4">
+                        <div className="inline-flex text-xs font-semibold text-gold-400 bg-gold-400/10 px-2 py-1 rounded mb-3">
+                          {dealer.type.replace('_', ' ').toUpperCase()}
+                        </div>
+                        <h4 className="text-lg font-bold text-white mb-1">{dealer.name}</h4>
+                        <div className="flex items-start gap-1.5 text-charcoal-400 text-sm">
+                          <MapPin size={14} className="mt-0.5 shrink-0 text-gold-500" />
+                          <span>
+                            {dealer.address ? `${dealer.address}, ` : ''}
+                            {dealer.city}, {dealer.state}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-auto space-y-2 pt-4 border-t border-white/5">
+                        {dealer.phone && (
+                          <div className="flex items-center gap-2 text-sm text-charcoal-300">
+                            <Phone size={14} className="text-charcoal-500" />
+                            <a href={`tel:${dealer.phone}`} className="hover:text-gold-400 transition-colors">
+                              {dealer.phone}
+                            </a>
+                          </div>
+                        )}
+                        {dealer.website && (
+                          <div className="flex items-center gap-2 text-sm text-charcoal-300">
+                            <Globe size={14} className="text-charcoal-500" />
+                            <a href={dealer.website.startsWith('http') ? dealer.website : `https://${dealer.website}`} target="_blank" rel="noreferrer" className="hover:text-gold-400 transition-colors truncate">
+                              {dealer.website.replace(/^https?:\/\//, '')}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
