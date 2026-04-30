@@ -49,7 +49,7 @@ export default function DealersPage() {
         .from('dealers')
         .select('*')
         .eq('is_active', true)
-        .order('average_rating', { ascending: false, nullsLast: true })
+        .order('average_rating', { ascending: false, nullsFirst: false })
         .limit(50);
 
       if (city.trim()) {
