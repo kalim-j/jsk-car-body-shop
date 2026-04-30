@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/lib/supabase";
 import { Dealer } from "@/types/dealer";
 import DealerCard from "./DealerCard";
 import FilterBar, { DealerFilters } from "./FilterBar";
@@ -25,25 +24,26 @@ export default function DealersPage() {
     verifiedOnly: false,
   });
 
+  // Default fetch using Foursquare on load
   useEffect(() => {
-    async function fetchDealers() {
+    async function fetchFoursquareDealers() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('dealers')
-        .select('*')
-        .eq('is_active', true)
-        .order('ai_score', { ascending: false });
-
-      if (error) {
-        console.error("Error fetching dealers:", error);
-      } else {
-        setDealers(data as Dealer[]);
-        setActiveCount(data.length);
+      try {
+        const response = await fetch('/api/nearby-dealers?state=Tamil%20Nadu&type=car%20dealer');
+        const data = await response.json();
+        
+        if (data.dealers) {
+          setDealers(data.dealers);
+          setActiveCount(data.total);
+        }
+      } catch (error) {
+        console.error("Error fetching Foursquare dealers:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
-    fetchDealers();
+    fetchFoursquareDealers();
   }, []);
 
   const states = useMemo(() => {
@@ -57,13 +57,24 @@ export default function DealersPage() {
         const q = filters.search.toLowerCase();
         const matchName = dealer.name.toLowerCase().includes(q);
         const matchCity = dealer.city?.toLowerCase().includes(q);
-        const matchSpec = dealer.specializations.some(s => s.toLowerCase().includes(q));
+        // Specializations aren't natively returned by basic Foursquare query but we handle defensively
+        const matchSpec = dealer.specializations?.some(s => s.toLowerCase().includes(q)) || false;
         if (!matchName && !matchCity && !matchSpec) return false;
       }
       if (filters.state !== "All" && dealer.state !== filters.state) return false;
-      if (filters.type !== "All" && !dealer.dealer_type.includes(filters.type) && !dealer.dealer_type.includes("both")) return false;
-      if (dealer.average_rating < filters.minRating) return false;
-      if (filters.verifiedOnly && !dealer.is_verified) return false;
+      
+      // Type matching
+      if (filters.type !== "All") {
+         const dType = typeof dealer.type === 'string' ? dealer.type.toLowerCase() : (dealer.dealer_type?.[0] || "").toLowerCase();
+         if (!dType.includes(filters.type.toLowerCase().replace('_', ' ')) && dType !== 'both') return false;
+      }
+
+      const rating = (dealer as any).rating || dealer.average_rating || 0;
+      if (rating < filters.minRating) return false;
+      
+      const isVerified = (dealer as any).source === 'foursquare' || dealer.is_verified;
+      if (filters.verifiedOnly && !isVerified) return false;
+      
       return true;
     });
   }, [dealers, filters]);
@@ -142,14 +153,14 @@ export default function DealersPage() {
         ) : filteredDealers.length > 0 ? (
           viewMode === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-              {filteredDealers.map(dealer => (
-                <DealerCard key={dealer.id} dealer={dealer} onContact={handleContact} />
+              {filteredDealers.map((dealer, idx) => (
+                <DealerCard key={dealer.id || idx} dealer={dealer} onContact={handleContact} />
               ))}
             </div>
           ) : (
             <div className="animate-fade-in">
               <div className="mb-4 text-charcoal-300 font-medium text-sm">
-                📍 Showing {filteredDealers.filter(d => d.latitude && d.longitude).length} dealers with location data on the map
+                📍 Showing {filteredDealers.filter(d => d.lat || d.latitude).length} dealers with location data on the map
               </div>
               <DealerMap dealers={filteredDealers as any} />
             </div>
@@ -159,6 +170,17 @@ export default function DealersPage() {
             <Users size={48} className="mx-auto mb-4 text-charcoal-600" />
             <h3 className="text-xl font-bold text-white mb-2">No Dealers Found</h3>
             <p className="text-charcoal-400">Try adjusting your filters or search query.</p>
+          </div>
+        )}
+        
+        {!loading && (
+          <div className="mt-12 text-center text-charcoal-500 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2">
+            Powered by 
+            <img 
+              src="https://foursquare.com/img/poweredByFoursquare/poweredby-one-color-white.svg" 
+              alt="Foursquare" 
+              className="h-4 opacity-50 hover:opacity-100 transition-opacity" 
+            />
           </div>
         )}
       </div>

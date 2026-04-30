@@ -1,40 +1,49 @@
-import { Dealer } from "@/types/dealer";
-import { Search, MapPin, Star, Phone, ShieldCheck } from "lucide-react";
-import Image from "next/image";
+import { MapPin, Star, ShieldCheck, Clock } from "lucide-react";
 
 interface DealerCardProps {
-  dealer: Dealer;
-  onContact: (dealer: Dealer) => void;
+  dealer: any; // Using any to handle both Foursquare and old Supabase schema gracefully
+  onContact?: (dealer: any) => void;
 }
 
-const cleanPhone = (phone: string) => phone.replace(/[\s\-\+]/g, "").replace(/^91/, "").replace(/^0/, "");
-
 export default function DealerCard({ dealer, onContact }: DealerCardProps) {
+  const photoUrl = dealer.photo || (dealer.images && dealer.images.length > 0 ? dealer.images[0] : null);
+  const rating = dealer.rating || dealer.average_rating || 0;
+  const totalReviews = dealer.totalReviews || dealer.total_reviews || 0;
+  const isVerified = dealer.is_verified || dealer.source === "foursquare";
+
   return (
     <div className="bg-charcoal-950 border border-white/5 rounded-2xl overflow-hidden hover:border-gold-500/30 transition-all group flex flex-col h-full shadow-lg">
       <div className="h-40 bg-charcoal-900 relative flex items-center justify-center p-4">
-        {dealer.images && dealer.images.length > 0 ? (
-          <Image
-            src={dealer.images[0]}
+        {photoUrl ? (
+          <img
+            src={photoUrl}
             alt={dealer.name}
-            fill
-            className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity absolute inset-0"
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-charcoal-800 to-black/50" />
         )}
-        <div className="absolute top-4 left-4 flex gap-2">
-          {dealer.is_verified && (
-            <div className="bg-green-500/20 text-green-400 backdrop-blur-md px-2 py-1 rounded text-xs font-bold flex items-center gap-1 border border-green-500/30">
+        
+        <div className="absolute top-4 left-4 flex flex-col gap-2">
+          {isVerified && (
+            <div className="bg-green-500/20 text-green-400 backdrop-blur-md px-2 py-1 rounded text-xs font-bold flex items-center gap-1 border border-green-500/30 w-fit">
               <ShieldCheck size={12} /> VERIFIED
             </div>
           )}
+          {dealer.openNow !== undefined && dealer.openNow !== null && (
+            <span className={`text-xs px-2 py-1 rounded w-fit border backdrop-blur-md flex items-center gap-1 ${dealer.openNow ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}`}>
+              <Clock size={10} /> {dealer.openNow ? 'Open Now' : 'Closed'}
+            </span>
+          )}
         </div>
-        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-2 py-1 rounded border border-white/10 flex items-center gap-1">
-          <Star size={12} className="text-gold-500 fill-gold-500" />
-          <span className="text-gold-400 text-xs font-bold">{dealer.average_rating.toFixed(1)}</span>
-          <span className="text-charcoal-400 text-[10px]">({dealer.total_reviews})</span>
-        </div>
+
+        {rating > 0 && (
+          <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-2 py-1 rounded border border-white/10 flex items-center gap-1">
+            <Star size={12} className="text-gold-500 fill-gold-500" />
+            <span className="text-gold-400 text-xs font-bold">{Number(rating).toFixed(1)}</span>
+            <span className="text-charcoal-400 text-[10px]">({totalReviews})</span>
+          </div>
+        )}
       </div>
 
       <div className="p-5 flex-1 flex flex-col">
@@ -61,45 +70,60 @@ export default function DealerCard({ dealer, onContact }: DealerCardProps) {
         )}
 
         <div className="mb-4 space-y-3 flex-1">
-          <div>
-            <p className="text-[10px] text-charcoal-500 uppercase font-semibold tracking-wider mb-1.5">Dealer Type</p>
-            <div className="flex flex-wrap gap-1">
-              {dealer.dealer_type.map((type) => (
-                <span key={type} className="text-xs text-charcoal-300 bg-white/5 px-2 py-1 rounded border border-white/10">
-                  {type.replace('_', ' ').toUpperCase()}
+           {dealer.type && (
+            <div>
+              <p className="text-[10px] text-charcoal-500 uppercase font-semibold tracking-wider mb-1.5">Dealer Type</p>
+              <div className="flex flex-wrap gap-1">
+                <span className="text-xs text-charcoal-300 bg-white/5 px-2 py-1 rounded border border-white/10 capitalize">
+                  {typeof dealer.type === 'string' ? dealer.type : (dealer.dealer_type?.[0] || 'Unknown')}
                 </span>
-              ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <p className="text-[10px] text-charcoal-500 uppercase font-semibold tracking-wider mb-1.5">Specializations</p>
-            <div className="flex flex-wrap gap-1">
-              {dealer.specializations.map((spec) => (
-                <span key={spec} className="text-xs text-charcoal-300 bg-white/5 px-2 py-1 rounded border border-white/10">
-                  {spec.replace('_', ' ')}
-                </span>
-              ))}
-            </div>
-          </div>
+           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-2 pt-4 border-t border-white/5 mt-auto">
-          {dealer.phone && (
-            <>
-              <a href={`tel:${dealer.phone}`} className="flex items-center justify-center gap-1 bg-gray-800 hover:bg-gray-700 text-white text-xs px-3 py-2.5 rounded-lg transition-colors">
+        <div className="flex flex-col gap-2 pt-4 border-t border-white/5 mt-auto">
+          <div className="flex gap-2">
+            {dealer.callLink ? (
+              <a href={dealer.callLink} className="flex-1 flex items-center justify-center gap-2 bg-charcoal-800 hover:bg-charcoal-700 border border-white/5 text-white text-xs px-2 py-2 rounded-lg transition-colors">
                 📞 Call
               </a>
-              <a href={`https://wa.me/91${cleanPhone(dealer.phone)}?text=Hi, I found your dealership on JSK CAR BODY SHOP. I am interested.`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1 bg-green-700 hover:bg-green-600 text-white text-xs px-3 py-2.5 rounded-lg transition-colors">
+            ) : (
+              dealer.phone && (
+                <a href={`tel:${dealer.phone}`} className="flex-1 flex items-center justify-center gap-2 bg-charcoal-800 hover:bg-charcoal-700 border border-white/5 text-white text-xs px-2 py-2 rounded-lg transition-colors">
+                  📞 Call
+                </a>
+              )
+            )}
+
+            {dealer.whatsappLink ? (
+              <a href={dealer.whatsappLink} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-green-700/80 hover:bg-green-600 border border-green-500/20 text-white text-xs px-2 py-2 rounded-lg transition-colors">
                 💬 WhatsApp
               </a>
-            </>
-          )}
-          <a href={dealer.latitude && dealer.longitude ? `https://www.google.com/maps?q=${dealer.latitude},${dealer.longitude}` : `https://www.google.com/maps/search/${encodeURIComponent(dealer.name + " " + dealer.city + " India")}`} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-center gap-1 bg-blue-700 hover:bg-blue-600 text-white text-xs px-3 py-2.5 rounded-lg transition-colors ${!dealer.phone ? 'col-span-1' : ''}`}>
-            🗺️ Maps
-          </a>
-          <a href={`https://wa.me/?text=Join JSK CAR BODY SHOP dealer network free: https://jsk-car-body-shop.vercel.app/dealers/register`} target="_blank" rel="noopener noreferrer" className={`flex items-center justify-center gap-1 bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold px-3 py-2.5 rounded-lg transition-colors ${!dealer.phone ? 'col-span-1' : ''}`}>
-            ➕ Invite
-          </a>
+            ) : (
+               <div className="flex-1 flex items-center justify-center gap-2 bg-charcoal-900 border border-white/5 text-charcoal-500 text-xs px-2 py-2 rounded-lg">
+                 📵 No Phone
+               </div>
+            )}
+          </div>
+
+          <div className="flex gap-2">
+            {dealer.mapsLink ? (
+              <a href={dealer.mapsLink} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-blue-700/80 hover:bg-blue-600 border border-blue-500/20 text-white text-xs px-2 py-2 rounded-lg transition-colors">
+                🗺️ Maps
+              </a>
+            ) : (
+              <a href={`https://www.google.com/maps/search/${encodeURIComponent(dealer.name + " " + dealer.city + " India")}`} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-blue-700/80 hover:bg-blue-600 border border-blue-500/20 text-white text-xs px-2 py-2 rounded-lg transition-colors">
+                🗺️ Maps
+              </a>
+            )}
+            
+            {onContact && (
+              <button onClick={() => onContact(dealer)} className="flex-1 flex items-center justify-center gap-2 btn-gold text-black text-xs font-bold px-2 py-2 rounded-lg">
+                ✉️ Inquiry
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

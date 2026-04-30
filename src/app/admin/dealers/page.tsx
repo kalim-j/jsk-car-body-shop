@@ -56,6 +56,22 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteAllFakeDealers = async () => {
+    if (confirm("Are you sure you want to delete ALL dealers? This cannot be undone.")) {
+      setLoading(true);
+      const { error } = await supabase.from('dealers').delete().not('id', 'is', null);
+      if (!error) {
+        alert("All fake dealers deleted");
+        setDealers([]);
+        setStats(prev => ({ ...prev, total: 0, verified: 0 }));
+      } else {
+        console.error(error);
+        alert("Failed to delete dealers");
+      }
+      setLoading(false);
+    }
+  };
+
   const TABS = [
     { id: "all", label: "All Dealers", icon: Users },
     { id: "add", label: "Add New", icon: Plus },
@@ -131,6 +147,15 @@ export default function AdminDashboard() {
             <>
               {activeTab === "all" && (
                 <div className="bg-charcoal-950 border border-white/10 rounded-xl overflow-hidden">
+                  <div className="p-4 border-b border-white/10 flex justify-between items-center bg-black/50">
+                    <h3 className="font-bold">Database Records</h3>
+                    <button 
+                      onClick={handleDeleteAllFakeDealers}
+                      className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors"
+                    >
+                      <XCircle size={16} /> Delete All Fake Dealers
+                    </button>
+                  </div>
                   <table className="w-full text-left text-sm">
                     <thead className="bg-black border-b border-white/10 text-charcoal-400 uppercase text-[10px] tracking-wider">
                       <tr>
