@@ -67,16 +67,20 @@ export default function DealerMap({ dealers }: DealerMapProps) {
             <div className="bg-white p-2 rounded text-black max-w-[250px]">
               <h3 className="font-bold text-lg mb-1">{selectedDealer.name}</h3>
               <p className="text-sm text-gray-600 mb-2">{selectedDealer.city}, {selectedDealer.state}</p>
-              <div className="flex items-center gap-1 mb-2 text-sm font-semibold">
-                <Star size={14} className="text-yellow-500 fill-yellow-500" />
-                {selectedDealer.average_rating.toFixed(1)} ({selectedDealer.total_reviews} reviews)
-              </div>
-              <a 
-                href={`tel:${selectedDealer.phone}`} 
-                className="block text-center w-full bg-blue-600 text-white text-sm py-1.5 rounded font-medium hover:bg-blue-700 transition-colors"
-              >
-                Call {selectedDealer.phone}
-              </a>
+              {(selectedDealer.average_rating != null || selectedDealer.rating != null) && (
+                <div className="flex items-center gap-1 mb-2 text-sm font-semibold">
+                  <Star size={14} className="text-yellow-500 fill-yellow-500" />
+                  {Number(selectedDealer.average_rating ?? selectedDealer.rating ?? 0).toFixed(1)} ({selectedDealer.total_reviews ?? selectedDealer.totalReviews ?? 0} reviews)
+                </div>
+              )}
+              {selectedDealer.phone && (
+                <a 
+                  href={`tel:${selectedDealer.phone}`} 
+                  className="block text-center w-full bg-blue-600 text-white text-sm py-1.5 rounded font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Call {selectedDealer.phone}
+                </a>
+              )}
             </div>
           </InfoWindow>
         )}
