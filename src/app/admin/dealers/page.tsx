@@ -171,7 +171,7 @@ export default function AdminDashboard() {
                         <tr key={dealer.id} className="hover:bg-white/5 transition-colors">
                           <td className="p-4">
                             <div className="font-bold text-white">{dealer.name}</div>
-                            <div className="text-xs text-charcoal-500">{dealer.dealer_type.join(", ")}</div>
+                            <div className="text-xs text-charcoal-500">{(dealer.dealer_type || []).join(", ") || dealer.type || "Unknown"}</div>
                           </td>
                           <td className="p-4 text-charcoal-300">{dealer.city}, {dealer.state}</td>
                           <td className="p-4">

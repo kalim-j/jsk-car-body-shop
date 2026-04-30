@@ -65,7 +65,7 @@ export default function DealersPage() {
       
       // Type matching
       if (filters.type !== "All") {
-         const dType = typeof dealer.type === 'string' ? dealer.type.toLowerCase() : (dealer.dealer_type?.[0] || "").toLowerCase();
+         const dType = (dealer.type || dealer.dealer_type?.[0] || "").toLowerCase();
          if (!dType.includes(filters.type.toLowerCase().replace('_', ' ')) && dType !== 'both') return false;
       }
 
